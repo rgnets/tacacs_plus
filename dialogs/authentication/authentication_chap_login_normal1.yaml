@@ -1,0 +1,48 @@
+--- 
+:description: successful chap login by user dustin.
+
+:client_log:  []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authentication\tmessage=Authentication successful.\tstatus=Pass\tclient=127.0.0.1\taction=Login\tauthen_type=CHAP\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 40
+    major_version: 12
+    minor_version: 1
+    seq_no: 1
+    session_id: 208118075
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 3
+    data: "achallenge\xD9\xE5\x8EW\xB6\xD9Oc\xBC\xAB>1{\t\xFB^"
+    data_len: 26
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 6
+    major_version: 12
+    minor_version: 1
+    seq_no: 2
+    session_id: 208118075
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 0
+    server_msg_len: 0
+    status: 1

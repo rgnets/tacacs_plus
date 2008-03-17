@@ -1,0 +1,62 @@
+--- 
+:description: accounting request. cisco ace. user dustin
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Accounting\tmessage=Client provided the following args: task_id=/dev/pts/0_1191417608, start_time=Wed Oct  3 13:20:08 2007, err_msg=, service=none\tstatus=Success\tflags=Start\tclient=127.0.0.1\tauthen_method=TACACS Plus\tauthen_type=PAP\tport=3000\tpriv_lvl=0\trem_addr=\tservice=None\tuser=dustin"
+
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 107
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 366978975
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingRequest
+    arg_cnt: 4
+    arg_lens:
+    - 29
+    - 35
+    - 8
+    - 12
+    args:
+    - task_id=/dev/pts/0_1191417608
+    - start_time=Wed Oct  3 13:20:08 2007
+    - err_msg=
+    - service=none
+    authen_method: 6
+    authen_type: 2
+    flags: 2
+    port: "3000"
+    port_len: 4
+    priv_lvl: 0
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 5
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 366978975
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingReply
+    data:
+    data_len: 0
+    server_msg:
+    server_msg_len: 0
+    status: 1
+

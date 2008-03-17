@@ -1,0 +1,64 @@
+--- 
+:description: client requests authorization, but then sends abort message.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 8
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3216440735
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 1
+    data: 
+    data_len: 0
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: 
+    user_len: 0
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 5
+    major_version: 12
+    minor_version: 0
+    seq_no: 3
+    session_id: 3216440735
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationContinue 
+    data: 
+    data_len: 0
+    flags: 1
+    user_msg: 
+    user_msg_len: 0
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 42
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3216440735
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 0
+    server_msg: "User Access Verification\n\n\
+      Username: "
+    server_msg_len: 36
+    status: 4

@@ -1,0 +1,63 @@
+--- 
+:description: authorization request. cisco ace. user dustin
+
+:ip: 10.10.10.11
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=User issued the following AVPairs: shell:Admin*Admin default-domain\tstatus=Pass Add\tclient=10.10.10.11\tauthen_method=TACACS Plus\tauthen_type=PAP\tport=\tpriv_lvl=1\trem_addr=xxxxxxxxxxxx\tservice=Login\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 73
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 1758768215
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest
+    arg_cnt: 4
+    arg_lens:
+    - 13
+    - 4
+    - 14
+    - 12
+    args:
+    - service=shell
+    - cmd=
+    - cisco-av-pair*
+    - shell:Admin*
+    authen_method: 6
+    authen_type: 2
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: xxxxxxxxxxxx
+    rem_addr_len: 12
+    service: 1
+    user: dustin
+    user_len: 6
+
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 39
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 1758768215
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse
+    arg_cnt: 1
+    arg_lens:
+    - 32
+    args:
+    - shell:Admin*Admin default-domain
+    data_len: 0
+    server_msg_len: 0
+    status: 1

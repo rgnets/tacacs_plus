@@ -1,0 +1,199 @@
+# THIS FILE IS IN YAML FORMAT. PLEASE PAY ATTENTION TO THE WHITESPACE FORMATTING, AS IT IS IMPORTANT.
+#
+# PLEASE SEE DOCUMENTATION FOR THE TacacsPlus::Server CLASS FOR A COMPLETE LIST OF CONFIGURATION OPTIONS.
+
+
+#### NETWORK OBJECT GROUPS ####
+:network_object_groups:
+
+  datacenter1:
+  - 10.0.0.0/15
+  - 10.2.0.0/16
+
+
+
+
+#### SHELL COMMAND OBJECT GROUPS ####
+:shell_command_object_groups:
+
+  basic configuration:
+  - ^description .*
+  - ^duplex .*
+  - ^interface .*
+  - ^no shutdown <cr>$
+  - ^shutdown <cr>$
+  - ^speed .*
+  - ^switchport access vlan [0-9]+ <cr>$
+  - ^switchport trunk allowed vlan add [0-9]+ <cr>$
+  - ^switchport trunk allowed vlan remove [0-9]+ <cr>$
+  - ^write <cr>$
+  - ^write memory <cr>$
+  - ^shutdown <cr>$
+
+  show:
+  - ^show .*
+  - ^write terminal <cr>$
+  - ^do show .*
+  - ^ping .*
+  - ^terminal monitor <cr>$
+  - ^traceroute .*
+
+
+
+
+#### ACCESS CONTROL LISTS ###
+:acls:
+
+  deny all:
+  - :permission: deny
+    :ip: any
+
+  permit all:
+  - :permission: permit
+    :ip: any
+
+  permit all dc:
+  - :permission: permit
+    :network_object_group: datacenter1
+  - :permission: permit
+    :ip: 10.9.9.0
+    :wildcard_mask: 0.0.0.255
+
+  permit localhost:
+  - :permission: permit
+    :ip: 127.0.0.1
+
+
+
+
+#### COMMAND AUTHORIZATION PROFILES ####
+:command_authorization_profiles:
+  read only:
+  - :acl: permit all
+    :shell_command_object_group: show
+
+
+  basic user:
+  - :acl: permit all
+    :shell_command_object_group: show
+  - :acl: permit all dc
+    :command: ^configure terminal <cr>$
+  - :acl: permit all dc
+    :shell_command_object_group: basic configuration
+
+  advanced user:
+  - :acl: permit all
+    :command: .*
+
+  localhost:
+  - :acl: permit localhost
+    :command: .*
+
+
+
+
+#### AUTHOR AVPAIRS ####
+:author_avpairs:
+  basic user:
+  - :acl: permit all dc
+    :service: shell
+    :avpairs:
+    - idletime=5
+    - timeout=30
+  - :acl: permit localhost
+    :service: shell
+    :avpairs:
+    - priv-lvl=15
+
+  localhost:
+  - :acl: permit localhost
+    :service: shell
+    :avpairs:
+    - priv-lvl=15
+
+  restrictive:
+  - :acl: permit all
+    :service: shell
+    :avpairs:
+    - idletime=1
+    - timeout=1
+
+  loose:
+  - :acl: permit all
+    :service: shell
+    :avpairs:
+    - priv-lvl=15
+
+
+
+#### USER GROUPS ####
+:user_groups:
+  read only:
+    :command_authorization_profile: read only
+    :enable_acl: deny all
+    :login_acl: permit all
+    :author_avpair: restrictive
+
+  basic user:
+    :command_authorization_profile: basic user
+    :enable_acl: permit all
+    :login_acl: permit all
+    :author_avpair: basic user
+
+  advanced user:
+    :command_authorization_profile: advanced user
+    :enable_acl: permit all
+    :login_acl: permit all
+    :author_avpair: basic user
+
+
+
+
+#### USERS ####
+:users:
+  user1:
+    :encryption: sha1
+    :salt: V5AVgebMv9u50toy9VXEgabeHhgpWnDo
+    :enable: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
+    :password: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
+    :user_group: advanced user
+    :author_avpair: loose
+
+  user2:
+    :encryption: clear
+    :enable: password
+    :password: password
+    :user_group: basic user
+
+  user3:
+    :encryption: clear
+    :enable: password
+    :password: password
+    :user_group: read only
+
+  user4:
+    :command_authorization_profile: localhost
+    :encryption: clear
+    :enable: password
+    :enable_acl: permit localhost
+    :login_acl: permit localhost
+    :password: password
+    :author_avpair: localhost
+
+
+
+
+#### TACACS DAEMON ####
+:tacacs_daemon:
+  :ip: 127.0.0.1
+  :key: s0mek3y
+  :log_level: 0
+  :logger: /tmp/aaa.log   # specify absolute path here
+  #:dump_file: /tmp/dump.log   # specify absolute path here
+  :login_prompt: |-
+    Company XYZ
+    User Access Verification.
+    username: 
+  :port: 4949
+  :password_prompt: "Password Verification\npassword: "
+  :delimiter: "\t"

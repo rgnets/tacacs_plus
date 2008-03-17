@@ -1,0 +1,49 @@
+--- 
+:description: pap login failure. password incorrect for user dustin.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authentication\tmessage=Authentication failed.\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=PAP\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 23
+    major_version: 12
+    minor_version: 1
+    seq_no: 1
+    session_id: 2996366546
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 2
+    data: password2
+    data_len: 9
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 37
+    major_version: 12
+    minor_version: 1
+    seq_no: 2
+    session_id: 2996366546
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 0
+    server_msg: Username or password incorrect.
+    server_msg_len: 31
+    status: 2

@@ -1,0 +1,215 @@
+--- 
+:shell_command_object_groups: 
+  show commands: 
+  - show version
+  - show running-configuration
+  - show
+  whitelist: 
+  - login
+  - exit
+
+:network_object_groups: 
+  datacenter1: 
+  - 10.1.0.0/16
+  - 10.3.0.0/16
+  - 10.6.0.0/16
+  datacenter2:
+  - 10.7.0.0/16
+  - 10.9.0.128/25
+  - 10.9.1.128/25
+
+:acls: 
+  deny local: 
+  - :permission: deny
+    :ip: 127.0.0.0
+    :wildcard_mask: 0.255.255.255
+  - :permission: permit
+    :ip: any
+  deny all: 
+  - :permission: deny
+    :ip: any
+  permit dc: 
+  - :permission: permit
+    :network_object_group: datacenter1
+  - :permission: deny
+    :ip: 127.0.0.0
+    :wildcard_mask: 0.255.255.255
+  permit local: 
+  - :permission: permit
+    :ip: 127.0.0.0
+    :wildcard_mask: 0.255.255.255
+  - :permission: deny
+    :ip: any
+  permit all: 
+  - :permission: permit
+    :ip: any
+  permit dc2:
+  - :permission: deny
+    :ip: 10.7.7.7
+    :wildcard_mask: 0.0.0.0
+  - :permission: deny
+    :ip: 10.9.0.128
+    :wildcard_mask: 0.0.0.0
+  - :permission: permit
+    :network_object_group: datacenter2
+  permit ace:
+  - :permission: permit
+    :ip: 10.10.10.11
+    :wildcard_mask: 0.0.0.0
+
+:command_authorization_profiles: 
+  profile1: 
+  - :acl: permit all
+    :shell_command_object_group: show commands
+  - :acl: permit dc
+    :command: configure terminal
+  - :acl: permit local
+    :command: write erase
+  profile2: 
+  - :acl: permit all
+    :shell_command_object_group: show commands
+  profile3: 
+  - :acl: deny all
+    :shell_command_object_group: show commands
+
+:command_authorization_whitelist: 
+  - :acl: permit local
+    :command: enable
+  - :acl: permit all
+    :shell_command_object_group: whitelist
+
+:author_avpairs:
+  author_avpair1:
+  - :acl: permit all
+    :service: raccess
+    :avpairs:
+    - priv-lvl=0
+    - Perle_Line_Access_1=1
+    - Perle_Line_Access_2=1
+  - :acl: permit dc
+    :service: shell
+    :avpairs:
+    - idletime=5
+    - priv-lvl=1
+    - timeout=30
+  - :acl: permit local
+    :service: shell
+    :avpairs:
+    - priv-lvl=15
+  - :acl: permit dc2
+    :service: shell
+    :avpairs:
+    - priv-lvl=7
+    - optional*avpair
+  - :acl: permit ace
+    :service: shell
+    :avpairs:
+    - shell:Admin*Admin default-domain
+  author_avpair2:
+  - :acl: permit local
+    :service: shell
+    :avpairs:
+    - idletime=5
+    - priv-lvl=1
+    - timeout=30
+  author_avpair3:
+  - :acl: permit local
+    :service: shell
+    :avpairs:
+    - autocmd=show version
+
+:users: 
+  dustin: 
+    :password: password
+    :encryption: clear
+    :command_authorization_profile: profile1
+    :enable: enable
+    :author_avpair: author_avpair1
+    :login_acl: permit all
+    :enable_acl: permit all
+  tom: 
+    :password: password
+    :encryption: clear
+    :enable: enable
+    :login_acl: deny local
+    :author_avpair: author_avpair1
+    :enable_acl: permit all
+  brad: 
+    :enable_acl: deny local
+    :password: password
+    :encryption: clear
+    :command_authorization_profile: profile2
+    :enable: enable
+    :author_avpair: author_avpair2
+    :login_acl: permit all
+  david: 
+    :enable_acl: permit local
+    :password: password
+    :encryption: clear
+    :command_authorization_profile: profile3
+    :enable: enable
+    :author_avpair: author_avpair3
+    :login_acl: permit local
+  marty: 
+    :password: password
+    :password_expires_on: '2008-01-01'
+    :encryption: clear
+    :enable: enable
+    :enable_expires_on: '2008-01-01'
+    :login_acl: permit all
+    :enable_acl: permit all
+    :password_lifespan: 90
+  earle: 
+    :password: password
+    :encryption: clear
+    :enable: enable
+    :disabled: true
+    :login_acl: permit all
+    :enable_acl: permit all
+  adam: 
+    :password: password
+    :encryption: clear
+    :user_group: group1
+    :enable: enable
+  ethan: 
+    :password: password
+    :encryption: clear
+    :user_group: group2
+    :enable: enable
+  chip: 
+    :password: password
+    :encryption: clear
+    :user_group: group2
+    :enable: enable
+    :last_login: '2008-01-01'
+
+:user_groups: 
+  group1: 
+    :enable_acl: deny local
+    :login_acl: permit all
+  group2: 
+    :command_authorization_profile: profile1
+    :author_avpair: author_avpair1
+    :login_acl: permit all
+    :enable_acl: permit all
+
+:tacacs_daemon: 
+  :default_policy: deny
+  :delimiter: "\t"
+  :disabled_prompt: Account has been disabled.
+  :dump_file: /tmp/dump.log
+  :ip: '127.0.0.1'
+  :key: s0mek3y
+  :log_accounting: true
+  :log_authentication: true
+  :log_authorization: true
+  :logger: /tmp/tacacs.log
+  :log_level: 0
+  :login_prompt: "User Access Verification\n\nUsername: "
+  :max_clients: 20
+  :name: server1
+  :password_expired_prompt: Password has expired.
+  :password_prompt: "Password: "
+  :port: 49
+  :sock_timeout: 5
+  :testing: false

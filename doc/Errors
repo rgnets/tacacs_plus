@@ -1,0 +1,8 @@
+=Error Classes
+
+ +-Exception
+   +-StandardError
+     +-DecodeError => TACACS+ packet could not be decoded
+     +-EncodeError => TACACS+ packet could not be encoded
+     +-StopServer => Stop a running TacacsServer
+     +-TimeoutError => TACACS+ connection timed out

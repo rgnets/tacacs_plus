@@ -1,0 +1,79 @@
+--- 
+:description: enable attempt by user brad. restricted by acl.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authentication\tmessage=Authentication denied by ACL 'deny local' (line 1).\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=brad"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 12
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3199396411
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 0
+    data: 
+    data_len: 0
+    port: 
+    port_len: 0
+    priv_lvl: 15
+    rem_addr: 
+    rem_addr_len: 0
+    service: 2
+    user: brad
+    user_len: 4
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 11
+    major_version: 12
+    minor_version: 0
+    seq_no: 3
+    session_id: 3199396411
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationContinue 
+    data: 
+    data_len: 0
+    flags: 0
+    user_msg: enable
+    user_msg_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 16
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3199396411
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 1
+    server_msg: "Password: "
+    server_msg_len: 10
+    status: 5
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 60
+    major_version: 12
+    minor_version: 0
+    seq_no: 4
+    session_id: 3199396411
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply
+    data_len: 0
+    flags: 0
+    server_msg: Authentication denied due to ACL restrictions on user.
+    server_msg_len: 54
+    status: 2

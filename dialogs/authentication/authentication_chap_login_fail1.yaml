@@ -1,0 +1,48 @@
+--- 
+:description: chap login attempt. password is incorrect.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 40
+    major_version: 12
+    minor_version: 1
+    seq_no: 1
+    session_id: 2804495331
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 3
+    data: "achallenge\xE1\x96\xBF\xAA\x1F\x8Cw\xCB\xEB\xB3\x9C\xDD\xD1\xD1~\x93"
+    data_len: 26
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 37
+    major_version: 12
+    minor_version: 1
+    seq_no: 2
+    session_id: 2804495331
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 0
+    server_msg: Username or password incorrect.
+    server_msg_len: 31
+    status: 2

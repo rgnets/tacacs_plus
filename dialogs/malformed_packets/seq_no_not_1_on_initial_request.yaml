@@ -1,0 +1,36 @@
+--- 
+:description: seq_no set to 2 on initial client request.
+
+:client_log: 
+- "msg_type=TacacsPlus\tmessage=No response from server. Terminating connection."
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=TacacsPlus::Server\tmessage=Received out of sequence packet from client on initial request. Terminating connection.\tclient=127.0.0.1"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 32
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 1699747637
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 0
+    data: 
+    data_len: 0
+    port: TacacsPlus::Client
+    port_len: 18
+    priv_lvl: 15
+    rem_addr: 
+    rem_addr_len: 0
+    service: 2
+    user: dustin
+    user_len: 6
+
+:server_dialog: []
+

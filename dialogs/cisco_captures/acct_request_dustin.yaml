@@ -1,0 +1,63 @@
+--- 
+:description: cisco switch packet capture. accounting for 'show run' by user dustin
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Accounting\tmessage=Client provided the following args: task_id=166, timezone=UTC, service=shell, priv-lvl=15, cmd=show running-config <cr>\tstatus=Success\tflags=Stop\tclient=127.0.0.1\tauthen_method=TACACS Plus\tauthen_type=ASCII\tport=tty1\tpriv_lvl=1\trem_addr=xxxxxxxxxxx\tservice=Login\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 110
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 705334111
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingRequest
+    arg_cnt: 5
+    arg_lens:
+    - 11
+    - 12
+    - 13
+    - 11
+    - 28
+    args:
+    - task_id=166
+    - timezone=UTC
+    - service=shell
+    - priv-lvl=15
+    - cmd=show running-config <cr>
+    authen_method: 6
+    authen_type: 1
+    flags: 4
+    port: tty1
+    port_len: 4
+    priv_lvl: 1
+    rem_addr: xxxxxxxxxxx
+    rem_addr_len: 11
+    service: 1
+    user: dustin
+    user_len: 6
+
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 5
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 705334111
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingReply
+    data:
+    data_len: 0
+    server_msg:
+    server_msg_len: 0
+    status: 1
+

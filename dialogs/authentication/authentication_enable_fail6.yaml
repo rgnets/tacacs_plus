@@ -1,0 +1,79 @@
+--- 
+:description: enable fail. group enable password by user ethan.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authentication\tmessage=Authentication failed.\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=ethan"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 13
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 2139966416
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart
+    action: 1
+    authen_type: 0
+    data:
+    data_len: 0
+    port:
+    port_len: 0
+    priv_lvl: 15
+    rem_addr:
+    rem_addr_len: 0
+    service: 2
+    user: ethan
+    user_len: 5
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 12
+    major_version: 12
+    minor_version: 0
+    seq_no: 3
+    session_id: 2139966416
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationContinue
+    data:
+    data_len: 0
+    flags: 0
+    user_msg: enable2
+    user_msg_len: 7
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 16
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 2139966416
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply
+    data_len: 0
+    flags: 1
+    server_msg: "Password: "
+    server_msg_len: 10
+    status: 5
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 25
+    major_version: 12
+    minor_version: 0
+    seq_no: 4
+    session_id: 2139966416
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply
+    data_len: 0
+    flags: 0
+    server_msg: Password incorrect.
+    server_msg_len: 19
+    status: 2

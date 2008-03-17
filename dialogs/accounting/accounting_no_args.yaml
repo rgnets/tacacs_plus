@@ -1,0 +1,51 @@
+--- 
+:description: client sends message with no args.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Accounting\tmessage=Accounting request contained no args.\tstatus=Error\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_msg_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 15
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 1998980318
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingRequest
+    arg_cnt: 0
+    arg_lens: []
+    args: []
+    authen_method: 0
+    authen_type: 1
+    flags: 2
+    port:
+    port_len: 0
+    priv_lvl: 1
+    rem_addr:
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 42
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 1998980318
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingReply
+    data: Accounting request contained no args.
+    data_len: 37
+    server_msg_len: 0
+    status: 2
+

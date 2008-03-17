@@ -1,0 +1,79 @@
+:description: cisco switch packet capture. enable failure by user dustin.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authentication\tmessage=Authentication failed.\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=ASCII\tport=tty1\tpriv_lvl=15\trem_addr=xxxxxxxxxxx\tservice=Enable\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 29
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3542161677
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart
+    action: 1
+    authen_type: 1
+    data_len: 0
+    port: tty1
+    port_len: 4
+    priv_lvl: 15
+    rem_addr: xxxxxxxxxxx
+    rem_addr_len: 11
+    service: 2
+    user: dustin
+    user_len: 6
+
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 12
+    major_version: 12
+    minor_version: 0
+    seq_no: 3
+    session_id: 3542161677
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationContinue
+    data_len: 0
+    flags: 0
+    user_msg: lsjdfsd
+    user_msg_len: 7
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 16
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3542161677
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply
+    data:
+    data_len: 0
+    flags: 1
+    server_msg: "Password: "
+    server_msg_len: 10
+    status: 5
+
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 25
+    major_version: 12
+    minor_version: 0
+    seq_no: 4
+    session_id: 3542161677
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply
+    data_len: 0
+    flags: 0
+    server_msg: Password incorrect.
+    server_msg_len: 19
+    status: 2

@@ -1,0 +1,54 @@
+--- 
+:description: client requests 'shell' service, but 'cmd' arg is not present.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=Attribute 'cmd' is required when service is 'shell'.\tstatus=Fail\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 28
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3504855296
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest 
+    arg_cnt: 1
+    arg_lens: 
+    - 13
+    args: 
+    - service=shell
+    authen_method: 0
+    authen_type: 1
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 58
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3504855296
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse 
+    arg_cnt: 0
+    data: Attribute 'cmd' is required when service is 'shell'.
+    data_len: 52
+    server_msg_len: 0
+    status: 16
+    args: []
+    arg_lens: []

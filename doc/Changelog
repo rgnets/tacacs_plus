@@ -1,0 +1,18 @@
+==Version 0.0.2
+* complete rewrite of Server
+* added several methods to Client
+* various bug fixes
+
+
+==Version 0.0.3
+
+
+==Version 0.0.4
+* added ability to disable logging for any one of the A's in AAA
+* changed the password expiration options to dates & added password lifespan option
+* lowered logging level for enable requests
+
+
+* update tests to reflect all changes
+* update sample server to reflect changes
+* update documentation & sample configs

@@ -1,0 +1,59 @@
+--- 
+:description: arg 'service->shell' in client request is not a proper avpair.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=AVPair provided by client raised the following error: Improperly formed AVPair String 'service->shell'.\tstatus=Fail\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 49
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 86850757
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest 
+    arg_cnt: 3
+    arg_lens: 
+    - 14
+    - 9
+    - 1
+    args: 
+    - service->shell
+    - cmd=write
+    - cmd=erase
+    authen_method: 0
+    authen_type: 1
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 109
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 86850757
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse
+    arg_cnt: 0
+    data: "AVPair provided by client raised the following error: Improperly formed AVPair String 'service->shell'."
+    data_len: 103
+    server_msg_len: 0
+    status: 16
+    args: []
+    arg_lens: []
+

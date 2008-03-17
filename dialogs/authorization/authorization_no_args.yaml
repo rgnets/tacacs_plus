@@ -1,0 +1,55 @@
+--- 
+:description: client provides no args in authorization request.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=No arguments were provided with authorization request.\tstatus=Fail\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 14
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3504855296
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest 
+    arg_cnt: 0
+    arg_lens: []
+
+    args: []
+
+    authen_method: 0
+    authen_type: 1
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 60
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3504855296
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse 
+    arg_cnt: 0
+    data: No arguments were provided with authorization request.
+    data_len: 54
+    server_msg_len: 0
+    status: 16
+    args: []
+    arg_lens: []
+

@@ -1,0 +1,54 @@
+--- 
+:description: normal accounting message.
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Accounting\tmessage=Client provided the following args: task_id=1, timezone=cst\tstatus=Success\tflags=Start\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_msg_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 38
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 1998980318
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingRequest
+    arg_cnt: 2
+    arg_lens:
+    - 9
+    - 12
+    args:
+    - task_id=1
+    - timezone=cst
+    authen_method: 0
+    authen_type: 1
+    flags: 2
+    port:
+    port_len: 0
+    priv_lvl: 1
+    rem_addr:
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 5
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 1998980318
+    type: 3
+  body: !ruby/object:TacacsPlus::AccountingReply
+    data_len: 0
+    server_msg_len: 0
+    status: 1
+

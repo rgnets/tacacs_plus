@@ -1,0 +1,80 @@
+--- 
+:description: first request is authentication, second is authorization.
+
+:client_log: 
+- "Error with connection to server: Peer sent EOF."
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=TacacsPlus::Server\tmessage=Received non-authentication packet from client on non-initial request. Terminating connection.\tclient=127.0.0.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 8
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 3216440735
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 1
+    data: 
+    data_len: 0
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: 
+    user_len: 0
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 53
+    major_version: 12
+    minor_version: 0
+    seq_no: 3
+    session_id: 3216440735
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest 
+    arg_cnt: 3
+    arg_lens: 
+    - 13
+    - 8
+    - 15
+    args: 
+    - service=shell
+    - cmd=show
+    - cmd-arg=version
+    authen_method: 0
+    authen_type: 1
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: dustin
+    user_len: 6
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 42
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 3216440735
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationReply 
+    data_len: 0
+    flags: 0
+    server_msg: "User Access Verification\n\n\
+      Username: "
+    server_msg_len: 36
+    status: 4

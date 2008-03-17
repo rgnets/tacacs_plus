@@ -1,0 +1,36 @@
+--- 
+:description: client has unencrypted flag set, but server is not in testing mode.
+
+:client_log: 
+- "msg_type=TacacsPlus\tmessage=No response from server. Terminating connection."
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=TacacsPlus::Server\tmessage=Received unencrypted packet from client. Terminating connection.\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=TacacsPlus::Client\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser="
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 1
+    length: 26
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 1882512180
+    type: 1
+  body: !ruby/object:TacacsPlus::AuthenticationStart 
+    action: 1
+    authen_type: 0
+    data: 
+    data_len: 0
+    port: TacacsPlus::Client
+    port_len: 18
+    priv_lvl: 15
+    rem_addr: 
+    rem_addr_len: 0
+    service: 2
+    user: 
+    user_len: 0
+
+:server_dialog: []
+

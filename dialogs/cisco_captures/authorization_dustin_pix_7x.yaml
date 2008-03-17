@@ -1,0 +1,61 @@
+--- 
+:description: authorization request pix running 7.x code. user dustin
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=User permitted by ACL 'permit all' (line 1) on rule: /show/.\tcommand=show run\tstatus=Pass Add\tclient=127.0.0.1\tauthen_method=TACACS Plus\tauthen_type=ASCII\tport=0\tpriv_lvl=15\trem_addr=xxxxxxxxxxx\tservice=None\tuser=dustin"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 61
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 1294401332
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest
+    arg_cnt: 3
+    arg_lens:
+    - 13
+    - 8
+    - 11
+    args:
+    - service=shell
+    - cmd=show
+    - cmd-arg=run
+    authen_method: 6
+    authen_type: 1
+    port: "0"
+    port_len: 1
+    priv_lvl: 15
+    rem_addr: xxxxxxxxxxx
+    rem_addr_len: 11
+    service: 0
+    user: dustin
+    user_len: 6
+
+
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 6
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 1294401332
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse
+    arg_cnt: 0
+    arg_lens: []
+    args: []
+    data:
+    data_len: 0
+    server_msg:
+    server_msg_len: 0
+    status: 1
