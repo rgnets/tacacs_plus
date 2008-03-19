@@ -595,12 +595,6 @@ class TestServer < Test::Unit::TestCase
         assert_raise(ArgumentError){TacacsPlus::Server.new(config)}
     end
 
-    def test_arg_tacacs_name_not_string_error
-        config = @config.dup
-        config[:tacacs_daemon][:name] = 1
-        assert_raise(ArgumentError){TacacsPlus::Server.new(config)}
-    end
-
     def test_arg_tacacs_password_expired_prompt_not_string_error
         config = @config.dup
         config[:tacacs_daemon][:password_expired_prompt] = 1

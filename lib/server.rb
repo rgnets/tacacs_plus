@@ -72,7 +72,6 @@ module TacacsPlus
 #  * :logger - Logger object for dumping log entries
 #  * :login_prompt - a custom definable login prompt.
 #  * :max_clients - the max concurrent client connections allowed.
-#  * :name - the name of the tacacs daemon.
 #  * :password_expired_prompt - message to display to user if their password is expired
 #  * :password_prompt - a custom definable password prompt.
 #  * :port - the TCP port on which to bind the daemon.

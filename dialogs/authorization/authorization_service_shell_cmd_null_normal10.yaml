@@ -1,0 +1,79 @@
+--- 
+:description: normal request for shell settings. user chip. default policy = permit
+
+:tacacs_daemon: 
+  :default_policy: permit
+  :delimiter: "\t"
+  :disabled_prompt: Account has been disabled.
+  :dump_file: /tmp/dump.log
+  :ip: '127.0.0.1'
+  :key: s0mek3y
+  :log_accounting: true
+  :log_authentication: true
+  :log_authorization: true
+  :logger: /tmp/tacacs.log
+  :log_level: 0
+  :login_prompt: "User Access Verification\n\nUsername: "
+  :max_clients: 20
+  :password_expired_prompt: Password has expired.
+  :password_prompt: "Password: "
+  :port: 49
+  :sock_timeout: 5
+  :testing: false
+
+:ip: 10.1.1.1
+
+:client_log: []
+
+:server_log: 
+- "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
+- "msg_type=Authorization\tmessage=User issued the following AVPairs: autocmd=show version\tstatus=Pass Add\tclient=10.1.1.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=chip"
+
+:client_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader 
+    flags: 0
+    length: 31
+    major_version: 12
+    minor_version: 0
+    seq_no: 1
+    session_id: 2133386081
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationRequest 
+    arg_cnt: 2
+    arg_lens: 
+    - 13
+    - 4
+    args: 
+    - service=shell
+    - cmd=
+    authen_method: 0
+    authen_type: 1
+    port: 
+    port_len: 0
+    priv_lvl: 1
+    rem_addr: 
+    rem_addr_len: 0
+    service: 0
+    user: chip
+    user_len: 4
+
+:server_dialog: 
+- !ruby/struct:TacacsPlus::PacketStruct 
+  header: !ruby/object:TacacsPlus::TacacsHeader
+    flags: 0
+    length: 27
+    major_version: 12
+    minor_version: 0
+    seq_no: 2
+    session_id: 2133386081
+    type: 2
+  body: !ruby/object:TacacsPlus::AuthorizationResponse
+    arg_cnt: 1
+    arg_lens:
+    - 20
+    args:
+    - autocmd=show version
+    data_len: 0
+    server_msg_len: 0
+    status: 1

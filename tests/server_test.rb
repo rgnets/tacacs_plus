@@ -43,6 +43,7 @@ class TestServer < Test::Unit::TestCase
                 # prepare for client/server dialog.
                 logger = TacacsPlus::TestLogger.new
                 config = @config.dup
+                config[:tacacs_daemon] = @dialogs[dir][filename][:tacacs_daemon] if (@dialogs[dir][filename].has_key?(:tacacs_daemon))
                 config[:tacacs_daemon][:logger] = logger
                 socket = TacacsPlus::TestIO.new(client_requests)
                 tac_server = TacacsPlus::Server.new(config)

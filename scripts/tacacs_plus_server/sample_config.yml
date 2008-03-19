@@ -38,6 +38,10 @@
   - ^terminal monitor <cr>$
   - ^traceroute .*
 
+  whitelist:
+  - login
+  - exit
+
 
 
 
@@ -89,6 +93,12 @@
   - :acl: permit localhost
     :command: .*
 
+
+
+#### COMMAND AUTHORIZATION WHITELIST ####
+:command_authorization_whitelist: 
+  - :acl: permit all
+    :shell_command_object_group: whitelist
 
 
 

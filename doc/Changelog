@@ -3,13 +3,7 @@
 * changed the password expiration options to dates & added password lifespan option
 * lowered logging level for enable requests
 * fixed threading bug with server
-
-
-* make acl optional on all things. follow default policy if not present
-* make use of tacacs_daemon name in sample server
-* update tests to reflect all changes
-* update sample server to reflect changes
-* update documentation & sample configs
+* removed :name from tacacs_daemon (as it was useless)
 
 
 ==Version 0.0.3

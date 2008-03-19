@@ -71,6 +71,8 @@
   profile3: 
   - :acl: deny all
     :shell_command_object_group: show commands
+  profile4: 
+  - :shell_command_object_group: show commands
 
 :command_authorization_whitelist: 
   - :acl: permit local
@@ -115,6 +117,10 @@
   author_avpair3:
   - :acl: permit local
     :service: shell
+    :avpairs:
+    - autocmd=show version
+  author_avpair4:
+  - :service: shell
     :avpairs:
     - autocmd=show version
 
@@ -179,9 +185,9 @@
   chip: 
     :password: password
     :encryption: clear
-    :user_group: group2
+    :command_authorization_profile: profile4
     :enable: enable
-    :last_login: '2008-01-01'
+    :author_avpair: author_avpair4
 
 :user_groups: 
   group1: 
@@ -207,7 +213,6 @@
   :log_level: 0
   :login_prompt: "User Access Verification\n\nUsername: "
   :max_clients: 20
-  :name: server1
   :password_expired_prompt: Password has expired.
   :password_prompt: "Password: "
   :port: 49
