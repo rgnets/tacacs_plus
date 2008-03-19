@@ -1223,7 +1223,7 @@ class TacacsUser #:nodoc:
                 raise  ArgumentError, "SHA1 hashed enable passwords must be exactly 40 characters for user '#{@username}'." if (options[:enable].length != 40)
             end
             @enable = options[:enable]
-        else
+        elsif (options.has_key?(:enable) && !@encryption)
             raise ArgumentError, "Argument :enable provided, but no encryption specified for user '#{@username}'."
         end
 
@@ -1236,7 +1236,7 @@ class TacacsUser #:nodoc:
                 raise  ArgumentError, "SHA1 hashed password passwords must be exactly 40 characters for user '#{@username}'." if (options[:password].length != 40)
             end
             @password = options[:password]
-        else
+        elsif (options.has_key?(:password) && !@encryption)
             raise ArgumentError, "Argument :password provided, but no encryption specified for user '#{@username}'."
         end
 

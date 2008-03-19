@@ -1,18 +1,23 @@
-==Version 0.0.2
-* complete rewrite of Server
-* added several methods to Client
-* various bug fixes
-
-
-==Version 0.0.3
-
-
 ==Version 0.0.4
 * added ability to disable logging for any one of the A's in AAA
 * changed the password expiration options to dates & added password lifespan option
 * lowered logging level for enable requests
+* fixed threading bug with server
 
 
+* make acl optional on all things. follow default policy if not present
+* make use of tacacs_daemon name in sample server
 * update tests to reflect all changes
 * update sample server to reflect changes
 * update documentation & sample configs
+
+
+==Version 0.0.3
+* changed format of network object groups
+* added the concept of a command authorization whitelist
+
+
+==Version 0.0.2
+* complete rewrite of Server
+* added several methods to Client
+* various bug fixes
