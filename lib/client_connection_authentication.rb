@@ -308,7 +308,7 @@ private
 
         # log pass/fail
         if (ret_val[:pass])
-            user.last_login = Date.today
+            user.last_login_at = Time.now
             if (enable)
                 @tacacs_daemon.log(:info,['msg_type=Authentication', "message=#{pass_log_msg}","status=Pass"],authen_start,@peeraddr, username)
             else

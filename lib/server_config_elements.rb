@@ -953,9 +953,9 @@ class TacacsDaemon #:nodoc:
 
 # config hash for this object
     def configuration
-        cfg = {:default_policy => @default_policy, :disabled_prompt => @disabled_prompt, :delimiter => @delimiter, :ip => @ip,
+        cfg = {:default_policy => @default_policy.to_s, :disabled_prompt => @disabled_prompt, :delimiter => @delimiter, :ip => @ip,
                :log_accounting => @log_accounting, :log_authentication => @log_authentication, :log_authorization => @log_authorization,
-               :logger_level => @logger_level, :login_prompt => @login_prompt, :max_clients => @max_clients, :password_expired_prompt => @password_expired_prompt,
+               :log_level => @logger_level, :login_prompt => @login_prompt, :max_clients => @max_clients, :password_expired_prompt => @password_expired_prompt,
                :password_prompt => @password_prompt, :port => @port, :sock_timeout => @sock_timeout, :testing => @testing }
         cfg[:dump_file] = @dump_file if (@dump_file)
         cfg[:key] = @key if (@key)
@@ -1145,7 +1145,7 @@ class TacacsUser #:nodoc:
     attr_reader :author_avpair, :command_authorization_profile,
                 :enable, :enable_acl, :login_acl, :password, :user_group
 
-    attr_writer :last_login
+    attr_writer :last_login_at
 
     def initialize(tacacs_daemon,username,options)
         @username = username
@@ -1156,7 +1156,7 @@ class TacacsUser #:nodoc:
         @enable_expires_on = nil
         @enable_acl = nil
         @encryption = nil
-        @last_login = nil
+        @last_login_at = nil
         @login_acl = nil
         @password = nil
         @password_expires_on = nil
@@ -1166,7 +1166,7 @@ class TacacsUser #:nodoc:
 
         known_args = nil
         known_args = [:command_authorization_profile, :disabled, :enable, :enable_expired, :enable_expires_on, :enable_acl, :encryption,
-                      :last_login, :login_acl, :password, :password_expired, :password_expires_on, :password_lifespan, :salt, :author_avpair,
+                      :last_login_at, :login_acl, :password, :password_expired, :password_expires_on, :password_lifespan, :salt, :author_avpair,
                       :user_group]
 
         if (!options.kind_of?(Hash))
@@ -1301,11 +1301,11 @@ class TacacsUser #:nodoc:
             end
         end
 
-        if (options.has_key?(:last_login))
+        if (options.has_key?(:last_login_at))
             begin
-                @last_login = Date.parse(options[:last_login])
+                @last_login_at = Time.parse(options[:last_login_at])
             rescue
-                raise ArgumentError, "Invalid date for :last_login for user '#{@username}'."
+                raise ArgumentError, "Invalid date for :last_login_at for user '#{@username}'."
             end
         end
 
@@ -1325,7 +1325,7 @@ class TacacsUser #:nodoc:
         cfg[:enable_expires_on] = @enable_expires_on.to_s if (@enable_expires_on)
         cfg[:enable_acl] = @enable_acl.name if (@enable_acl)
         cfg[:encryption] = @encryption.to_s if (@encryption)
-        cfg[:last_login] = @last_login.to_s if (@last_login)
+        cfg[:last_login_at] = @last_login_at.strftime("%Y-%m-%d %H:%M:%S %Z") if (@last_login_at)
         cfg[:login_acl] = @login_acl.name if (@login_acl)
         cfg[:password] = @password if (@password)
         cfg[:password_expires_on] = @password_expires_on.to_s if (@password_expires_on)
@@ -1417,7 +1417,6 @@ class TacacsUser #:nodoc:
     def verify_password(pwd)
         pwd = encrypt_password(pwd) if (@encryption == :sha1)
         if (pwd == @password)
-            @last_login = Date.today
             return(true)
         end
         return(false)

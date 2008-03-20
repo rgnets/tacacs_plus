@@ -93,7 +93,7 @@ module TacacsPlus
 #  * :enable_acl - the name of an ACL specifying devices on which the user may request enable.
 #  * :enable_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1').
-#  * :last_login - the latest date on which this users performed a successful login (eg. '2008-01-01').
+#  * :last_login_at - the latest time on which this users performed a successful login (eg. '2008-01-01 00:00:00 UTC').
 #  * :login_acl - the name of an ACL specifying devices on which the user may login.
 #  * :password - the login password.
 #  * :password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.

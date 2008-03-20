@@ -3,6 +3,7 @@
  Licensed under the same terms as Ruby, No Warranty is provided.
 =end
 
+require 'time'
 require 'digest/md5'
 require 'socket'
 require 'logger'
