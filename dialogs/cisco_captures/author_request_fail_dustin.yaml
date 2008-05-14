@@ -5,7 +5,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authorization\tmessage=Authorization denied due to default policy.\tcommand=write terminal <cr>\tstatus=Fail\tclient=127.0.0.1\tauthen_method=TACACS Plus\tauthen_type=ASCII\tport=tty1\tpriv_lvl=1\trem_addr=xxxxxxxxxxx\tservice=Login\tuser=dustin"
+- "msg_type=Authorization\tmessage=Authorization denied due to implicit deny.\tcommand=write terminal <cr>\tstatus=Fail\tclient=127.0.0.1\tauthen_method=TACACS Plus\tauthen_type=ASCII\tport=tty1\tpriv_lvl=1\trem_addr=xxxxxxxxxxx\tservice=Login\tuser=dustin"
 
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct

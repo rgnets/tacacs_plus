@@ -1,5 +1,5 @@
 --- 
-:description: normal request for shell settings. user chip. fails due to no acl on chip.
+:description: normal request for shell settings. user chip. no acl on authoravpair author_avpair4.
 
 :ip: 10.1.1.1
 
@@ -7,8 +7,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authorization\tmessage=No AVPairs could be issued for service 'shell'\tstatus=Fail\tclient=10.1.1.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=chip"
-
+- "msg_type=Authorization\tmessage=User issued the following AVPairs: autocmd=show version\tstatus=Pass Add\tclient=10.1.1.1\tauthen_method=Not Set\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=chip"
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct 
   header: !ruby/object:TacacsPlus::TacacsHeader 
@@ -42,14 +41,18 @@
 - !ruby/struct:TacacsPlus::PacketStruct 
   header: !ruby/object:TacacsPlus::TacacsHeader
     flags: 0
-    length: 6
+    length: 27
     major_version: 12
     minor_version: 0
     seq_no: 2
     session_id: 2133386081
     type: 2
   body: !ruby/object:TacacsPlus::AuthorizationResponse
-    arg_cnt: 0
+    arg_cnt: 1
+    arg_lens:
+    - 20
+    args:
+    - autocmd=show version
     data_len: 0
     server_msg_len: 0
-    status: 16
+    status: 1

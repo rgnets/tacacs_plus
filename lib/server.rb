@@ -11,45 +11,44 @@ module TacacsPlus
 #* Object Groups - Come in 2 flavors; Network and Shell Command. Object Groups provide
 #  a mechanism for grouping like objects together. Network Object Groups contain IP addresses, while
 #  Shell Command Object Groups contain shell commands.
-#* ACLs - Define access controls for various tasks by permitting or denying based on source IP of the clients.
+#* ACLs - Define access controls for various tasks by permitting or denying based on source IP of the clients. They have an
+#  implicit deny at the end.
+#* Authorization AVPairs - Define the shell settings a user is granted upon login to specific devices.
 #* Command Authorization Profiles - Define the shell commands a user may run, and from which devices they may run them.
+#  They have an implicit deny at the end.
 #* Command Authorization Whitelist - Authorization for any command listed here will always pass regardless
 #  of the user requesting the authorization. This essentially bypasses normal authorization proceedures, thus it is useful for basic
 #  commands such as 'login' or 'exit' which should always be available to all users (very useful for situations where you find
 #  yourself locked out of a device due to AAA Authentication errors)
-#* Shell Profiles - Define the shell settings a user is granted upon login to specific devices.
 #* User Groups - Allows various settings to be granted to a collection of users.
 #
 #A number of options may be passed during the initialization of a server. These options are as follows:
 #
 #* :acls - Contains a Hash of Arrays. The key of the Hash indicates the acl name,
 #  and the value is an Array of Hashes with the keys:
-#  * :ip -  IP address
-#  * :network_object_group - indicates a Network Object Group name to be used in the acl. Only
-#    :ip/:wildcard_mask or :network_object_group are required in any one acl entry.
-#  * :permission - should be either 'permit' or 'deny'.
+#  * :ip -  IP address (optional if :network_object_group provided)
+#  * :network_object_group - indicates a Network Object Group name to be used in the acl (optional if :ip provided)
+#  * :permission - should be either 'permit' or 'deny' (required)
 #  * :wildcard_mask - a special mask used for advanced IP pattern matching. Wildcard masks are always
 #    in bit-flipped format. For example the range 192.168.1.0/24 would be indicated
-#    with :ip => 192.168.1.0, :wildcard_mask => 0.0.0.255.
+#    with :ip => 192.168.1.0, :wildcard_mask => 0.0.0.255.(optional. defaults to 0.0.0.0)
 #
 #* :author_avpairs - Contains a Hash of Arrays. The key of the Hash
 #  indicates the profile name, and the value is an Array of Hashes with keys:
-#  * :acl - the name of an ACL to be used for issuing shell settings on a per-device basis.
-#  * :avpairs - an array of attribute-value pairs in the form 'attribute=value' or 'attribute*value' (see tac-rfc.1.78.txt for complete list of avpairs)
-#  * :service - a String indicating one of the standard Service AVPairs (shell, raccess, ppp, etc...)
+#  * :acl - the name of an ACL to be used for issuing shell settings on a per-device basis (optional)
+#  * :avpairs - an array of attribute-value pairs in the form 'attribute=value' or 'attribute*value' (required. see tac-rfc.1.78.txt for complete list of avpairs)
+#  * :service - a String indicating one of the standard Service AVPairs (shell, raccess, ppp, etc...) (required)
 #
 #* :command_authorization_profiles - Contains a Hash of Arrays. The key of the Hash
 #  indicates the profile name, and the value is an Array of Hashes with the keys:
-#  * :acl - the name of an ACL to be used for authorizting shell commands on a per-device basis.
-#  * :command - an individial shell command.
-#  * :shell_command_object_group - indicates the name of a Shell Command Object Group.
-#    :command and :shell_command_object_group are mutually exclusive, so only one must be specified for a given entry.
+#  * :acl - the name of an ACL to be used for authorizting shell commands on a per-device basis. (optional)
+#  * :command - an individial shell command (optional if :shell_command_object_group provided)
+#  * :shell_command_object_group - indicates the name of a Shell Command Object Group (optional if :command provided)
 #
 #* :command_authorization_whitelist - Array of Hashes with the keys:
 #  * :acl - the name of an ACL to be used for authorizting shell commands on a per-device basis.
-#  * :command - an individial shell command.
-#  * :shell_command_object_group - indicates the name of a Shell Command Object Group.
-#    :command and :shell_command_object_group are mutually exclusive, so only one must be specified for a given entry.
+#  * :command - an individial shell command (optional if :shell_command_object_group provided)
+#  * :shell_command_object_group - indicates the name of a Shell Command Object Group (optional if :command provided)
 #
 #* :network_object_groups - Contains a Hash of Arrays. The key of the Hash
 #  indicates the object group name, and the value is an Array of network blocks in either 
@@ -59,7 +58,8 @@ module TacacsPlus
 #  indicates the object group name, and the value is an Array of shell commands.
 #
 #* :tacacs_daemon - Contains a Hash with the keys:
-#  * :default_policy - indicates the policy for permitting/denying on ACLs, and will be either :permit or :deny.
+#  * :default_policy - defines how to handle users with no login/enable acls, or no command authorization profile.
+#                      must be :permit or :deny. defaults to :deny.
 #  * :delimiter - the delmitation character used in logging. defaults to \t.
 #  * :disabled_prompt - message to display to user if their account is disabled
 #  * :dump_file - IO object for dumping output of packet captures.
@@ -72,6 +72,7 @@ module TacacsPlus
 #  * :logger - Logger object for dumping log entries
 #  * :login_prompt - a custom definable login prompt.
 #  * :max_clients - the max concurrent client connections allowed.
+#  * :name - the name of this daemon (if present, included in logs as field 'tacacs_daemon')
 #  * :password_expired_prompt - message to display to user if their password is expired
 #  * :password_prompt - a custom definable password prompt.
 #  * :port - the TCP port on which to bind the daemon.
@@ -93,7 +94,6 @@ module TacacsPlus
 #  * :enable_acl - the name of an ACL specifying devices on which the user may request enable.
 #  * :enable_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1').
-#  * :last_login_at - the latest time on which this users performed a successful login (eg. '2008-01-01 00:00:00 UTC').
 #  * :login_acl - the name of an ACL specifying devices on which the user may login.
 #  * :password - the login password.
 #  * :password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.

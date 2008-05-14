@@ -11,7 +11,6 @@ class Acl #:nodoc:
     def initialize(tacacs_daemon,name,entries)
         @name = name
         @entries = []
-        @default_policy = tacacs_daemon.default_policy
 
         if (!name.kind_of?(String))
             raise ArgumentError, "Expected String for name of ACL, but #{name.class} provided."
@@ -42,8 +41,6 @@ class Acl #:nodoc:
 # :by => String
 #
     def match(cidr)
-        permit = false
-        permit = true if (@default_policy == :permit)
         line = 1
 
         @entries.each do |entry|
@@ -58,7 +55,7 @@ class Acl #:nodoc:
             line += 1
         end
 
-        return({:permit => permit, :by => '(default policy)'})
+        return({:permit => false, :by => '(implicit deny)'})
     end
 
 #==============================================================================#
@@ -257,12 +254,6 @@ class AuthorAVPairEntry #:nodoc:
         @avpairs = []
         @service = nil
 
-        if (tacacs_daemon.default_policy == :deny)
-            @default_policy = false
-        else
-            @default_policy = true
-        end
-
         known_args = [:acl, :avpairs, :service]
         raise ArgumentError, "Expected Hash, but #{options.class} provided."if (!options.kind_of?(Hash))
         TacacsPlus.validate_args(options.keys,known_args)
@@ -321,8 +312,9 @@ class AuthorAVPairEntry #:nodoc:
     def match?(service,cidr)
         if (@acl)
             return(true) if ( @service == service && @acl.match(cidr)[:permit] )
+
         else
-            return(true) if ( @service == service && @default_policy )
+            return(true) if ( @service == service )
         end
         return(false)
     end
@@ -342,12 +334,6 @@ class CommandAuthorizationProfile #:nodoc:
     def initialize(tacacs_daemon,name,entries)
         @name = name
         @entries = []
-
-        if (tacacs_daemon.default_policy == :deny)
-            @default_policy = false
-        else
-            @default_policy = true
-        end
 
         if (!name.kind_of?(String))
             raise ArgumentError, "Expected String for name of Command Authorization Profile, but #{name.class} provided."
@@ -394,13 +380,13 @@ class CommandAuthorizationProfile #:nodoc:
         @entries.each do |entry|
             rule = entry.match?(command)
             if (rule)
-                ret = {:rule => rule, :permit => true, :by => "default policy"}
+                ret = {:rule => rule, :permit => true}
                 if (entry.acl)
                     acl_match = entry.acl.match(cidr)
                     ret[:permit] = acl_match[:permit]
                     ret[:by] = "ACL '#{entry.acl.name}' #{acl_match[:by]}"
                 else
-                    ret[:permit] = @default_policy
+                    ret[:permit] = true
                 end
                 return(ret)
             end
@@ -499,12 +485,6 @@ class CommandAuthorizationWhitelistEntry #:nodoc:
         @command = nil
         @shell_command_object_group = nil
 
-        if (tacacs_daemon.default_policy == :deny)
-            @default_policy = false
-        else
-            @default_policy = true
-        end
-
         known_args = [:acl, :command, :shell_command_object_group]
         raise ArgumentError, "Expected Hash, but #{options.class} provided."if (!options.kind_of?(Hash))
         TacacsPlus.validate_args(options.keys,known_args)
@@ -556,7 +536,8 @@ class CommandAuthorizationWhitelistEntry #:nodoc:
 
 #
     def match?(cidr,command)
-        permit = @default_policy
+        permit = true
+
         if (@acl)
             permit = @acl.match(cidr)[:permit]
         end
@@ -708,7 +689,7 @@ class TacacsDaemon #:nodoc:
 
     attr_reader :default_policy, :delimiter, :disabled_prompt, :ip, :key,
                 :log_accounting, :log_authentication, :log_authorization,
-                :login_prompt, :max_clients, :password_expired_prompt, :password_prompt,
+                :login_prompt, :name, :max_clients, :password_expired_prompt, :password_prompt,
                 :port, :testing, :sock_timeout
     attr_accessor :command_authorization_whitelist, :dump_file, :logger, :logger_level
 
@@ -726,6 +707,7 @@ class TacacsDaemon #:nodoc:
         @logger_level = 2
         @login_prompt = "User Access Verification\n\nUsername: "
         @max_clients = 100
+        @name = nil
         @password_expired_prompt = "Password has expired."
         @password_prompt = "Password: "
         @port = 49
@@ -737,7 +719,7 @@ class TacacsDaemon #:nodoc:
         end
 
         known_args = [:default_policy, :disable_inactive, :disabled_prompt, :dump_file, :ip, :key, :log_accounting, :log_authentication,
-                      :log_authorization, :logger, :log_level, :login_prompt, :max_clients, :password_expired_prompt, :password_prompt,
+                      :log_authorization, :logger, :log_level, :login_prompt, :name, :max_clients, :password_expired_prompt, :password_prompt,
                       :port, :sock_timeout, :testing, :delimiter]
         TacacsPlus.validate_args(options.keys,known_args)
 
@@ -870,6 +852,13 @@ class TacacsDaemon #:nodoc:
             end
             @delimiter = options[:delimiter]
         end
+
+        if (options.has_key?(:name))
+            if (!options[:name].kind_of?(String))
+                raise ArgumentError, "Expected String for :name, but #{options[:name].class} provided."
+            end
+            @name = options[:name]
+        end
     end
 
 #==============================================================================#
@@ -973,6 +962,7 @@ class TacacsDaemon #:nodoc:
     def log(level,fields,pkt=nil,peeraddr=nil,username=nil)
         return(nil) if (!@logger)
         write_log = true
+        fields.push("tacacs_daemon=#{@name}") if (@name)
         fields.push("client=#{peeraddr.ip}") if (peeraddr)
 
         if (pkt)
@@ -1145,8 +1135,6 @@ class TacacsUser #:nodoc:
     attr_reader :author_avpair, :command_authorization_profile,
                 :enable, :enable_acl, :login_acl, :password, :user_group
 
-    attr_writer :last_login_at
-
     def initialize(tacacs_daemon,username,options)
         @username = username
         @author_avpair = nil
@@ -1156,7 +1144,6 @@ class TacacsUser #:nodoc:
         @enable_expires_on = nil
         @enable_acl = nil
         @encryption = nil
-        @last_login_at = nil
         @login_acl = nil
         @password = nil
         @password_expires_on = nil
@@ -1166,7 +1153,7 @@ class TacacsUser #:nodoc:
 
         known_args = nil
         known_args = [:command_authorization_profile, :disabled, :enable, :enable_expired, :enable_expires_on, :enable_acl, :encryption,
-                      :last_login_at, :login_acl, :password, :password_expired, :password_expires_on, :password_lifespan, :salt, :author_avpair,
+                      :login_acl, :password, :password_expired, :password_expires_on, :password_lifespan, :salt, :author_avpair,
                       :user_group]
 
         if (!options.kind_of?(Hash))
@@ -1301,14 +1288,6 @@ class TacacsUser #:nodoc:
             end
         end
 
-        if (options.has_key?(:last_login_at))
-            begin
-                @last_login_at = Time.parse(options[:last_login_at])
-            rescue
-                raise ArgumentError, "Invalid date for :last_login_at for user '#{@username}'."
-            end
-        end
-
     end
 
 #==============================================================================#
@@ -1325,7 +1304,6 @@ class TacacsUser #:nodoc:
         cfg[:enable_expires_on] = @enable_expires_on.to_s if (@enable_expires_on)
         cfg[:enable_acl] = @enable_acl.name if (@enable_acl)
         cfg[:encryption] = @encryption.to_s if (@encryption)
-        cfg[:last_login_at] = @last_login_at.strftime("%Y-%m-%d %H:%M:%S %Z") if (@last_login_at)
         cfg[:login_acl] = @login_acl.name if (@login_acl)
         cfg[:password] = @password if (@password)
         cfg[:password_expires_on] = @password_expires_on.to_s if (@password_expires_on)

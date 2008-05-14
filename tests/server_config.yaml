@@ -188,6 +188,9 @@
     :command_authorization_profile: profile4
     :enable: enable
     :author_avpair: author_avpair4
+  jon: 
+    :password: password
+    :encryption: clear
 
 :user_groups: 
   group1: 

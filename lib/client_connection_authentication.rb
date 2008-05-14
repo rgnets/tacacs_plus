@@ -308,7 +308,6 @@ private
 
         # log pass/fail
         if (ret_val[:pass])
-            user.last_login_at = Time.now
             if (enable)
                 @tacacs_daemon.log(:info,['msg_type=Authentication', "message=#{pass_log_msg}","status=Pass"],authen_start,@peeraddr, username)
             else
@@ -362,7 +361,14 @@ private
                             new_body.server_msg = "Authentication denied due to ACL restrictions on user."
                             @tacacs_daemon.log(:info,['msg_type=Authentication', 'message=User attempted CHAP login to restricted device.',"status=#{new_body.xlate_status}"],authen_start,@peeraddr)
                         end
+
+                    elsif (@tacacs_daemon.default_policy == :deny)
+                        new_body.status_fail!
+                        new_body.server_msg = "Authentication denied due to ACL restrictions on user."
+                        @tacacs_daemon.log(:info,['msg_type=Authentication', 'message=CHAP login denied due to default policy.',"status=#{new_body.xlate_status}"],authen_start,@peeraddr)
+
                     else
+                        @tacacs_daemon.log(:info,['msg_type=Authentication', 'message=CHAP login permitted due to default policy.',"status=#{new_body.xlate_status}"],authen_start,@peeraddr)
                         new_body.status_pass!
                         new_body.server_msg = ""
                     end

@@ -17,14 +17,6 @@ private
         message = ''
         whitelisted = false
 
-        if (@tacacs_daemon.default_policy == :permit)
-            new_body.status_passadd!
-            message = "Authorization permitted due to default policy."
-        else
-            new_body.status_fail!
-            message = "Authorization denied due to default policy."
-        end
-
         # get all cmd-arg entries
         command = []
         avpairs.each do |avpair|
@@ -80,12 +72,27 @@ private
                     if (match_results)
                         if (match_results[:permit])
                             new_body.status_passadd!
-                            message = "User permitted by #{match_results[:by]} on rule: #{match_results[:rule]}."
+                            if ( match_results.has_key?(:by) )
+                                message = "User permitted by #{match_results[:by]} on rule: #{match_results[:rule]}."
+                            else
+                                message = "User permitted by rule: #{match_results[:rule]}."
+                            end
                         else
                             new_body.status_fail!
                             message = "User denied by #{match_results[:by]} on rule: #{match_results[:rule]}."
                         end
+                    else
+                        new_body.status_fail!
+                        message = "Authorization denied due to implicit deny."
                     end
+
+                elsif (@tacacs_daemon.default_policy == :deny)
+                    new_body.status_fail!
+                    message = "Authorization denied due to default policy."
+
+                else
+                    new_body.status_passadd!
+                    message = "Authorization permitted due to default policy."
                 end
             end
         end
