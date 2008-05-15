@@ -1,3 +1,4 @@
+* explain usage of password_lifespan in doc
 * check into sock timeout. make this separate for each packet recvd
 * review doc on server. make sure to explain optional vs required fields
 

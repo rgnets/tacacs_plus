@@ -1142,6 +1142,7 @@ class TacacsUser #:nodoc:
         @disabled = false
         @enable = nil
         @enable_expires_on = nil
+        @enable_lifespan = 0
         @enable_acl = nil
         @encryption = nil
         @login_acl = nil
@@ -1152,9 +1153,9 @@ class TacacsUser #:nodoc:
         @user_group = nil
 
         known_args = nil
-        known_args = [:command_authorization_profile, :disabled, :enable, :enable_expired, :enable_expires_on, :enable_acl, :encryption,
-                      :login_acl, :password, :password_expired, :password_expires_on, :password_lifespan, :salt, :author_avpair,
-                      :user_group]
+        known_args = [:command_authorization_profile, :disabled, :enable, :enable_expired, :enable_expires_on, :enable_lifespan,
+                      :enable_acl, :encryption,:login_acl, :password, :password_expired, :password_expires_on, :password_lifespan,
+                      :salt, :author_avpair, :user_group]
 
         if (!options.kind_of?(Hash))
             raise ArgumentError, "Expected Hash for options of User,  but #{options.class} provided."
@@ -1251,6 +1252,13 @@ class TacacsUser #:nodoc:
             raise ArgumentError, "Argument :password provided, but no encryption specified for user '#{@username}'."
         end
 
+        if (options.has_key?(:enable_lifespan))
+            raise ArgumentError, "Expected Integer for :enable_lifespan, but #{options[:enable_lifespan].class} " +
+                                 "received for user '#{@username}'." if(!options[:enable_lifespan].kind_of?(Integer))
+            raise ArgumentError, "Argument :enable_lifespan must be 0 or greater for user '#{@username}'." if (options[:enable_lifespan] <  0)
+            @enable_lifespan = options[:enable_lifespan]
+        end
+
         if (options.has_key?(:password_lifespan))
             raise ArgumentError, "Expected Integer for :password_lifespan, but #{options[:password_lifespan].class} " +
                                  "received for user '#{@username}'." if(!options[:password_lifespan].kind_of?(Integer))
@@ -1302,6 +1310,7 @@ class TacacsUser #:nodoc:
         cfg[:disabled] = self.disabled? if (self.disabled?)
         cfg[:enable] = @enable if (@enable)
         cfg[:enable_expires_on] = @enable_expires_on.to_s if (@enable_expires_on)
+        cfg[:enable_lifespan] = @enable_lifespan if (@password_lifespan != 0)
         cfg[:enable_acl] = @enable_acl.name if (@enable_acl)
         cfg[:encryption] = @encryption.to_s if (@encryption)
         cfg[:login_acl] = @login_acl.name if (@login_acl)
@@ -1326,7 +1335,7 @@ class TacacsUser #:nodoc:
 #==============================================================================#
 
     def enable_expired?
-        return(true) if (@password_lifespan > 0 && @enable_expires_on <= Date.today)
+        return(true) if (@enable_lifespan > 0 && @enable_expires_on <= Date.today)
         return(false)
     end
 

@@ -165,6 +165,7 @@
     :login_acl: permit all
     :enable_acl: permit all
     :password_lifespan: 90
+    :enable_lifespan: 90
   earle: 
     :password: password
     :encryption: clear
