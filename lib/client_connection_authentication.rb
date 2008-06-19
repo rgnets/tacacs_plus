@@ -160,9 +160,9 @@ private
                             user = @tacacs_daemon.users(username)
 
                             if (session.authen_start.body.service_enable?)
-                                user.enable = password
+                                user.enable_password = password
                             else
-                                user.password = password
+                                user.login_password = password
                             end
                             new_body.status_pass!
                             new_body.server_msg = "Password updated."
@@ -246,12 +246,12 @@ private
             fail_log_msg = 'Authentication attempt from disabled account.'
 
         elsif (enable) # check enable password
-            if (user.enable)
-                if ( user.verify_enable(password) )
+            if (user.enable_password)
+                if ( user.verify_enable_password(password) )
                    ret_val[:pass] = true
 
                    # if login, check if enable is expired
-                    if (authen_start.body.action_login? && user.enable_expired?)
+                    if (authen_start.body.action_login? && user.enable_password_expired?)
                         ret_val[:pass] = false
                         ret_val[:msg] = @tacacs_daemon.password_expired_prompt
                     end
@@ -266,12 +266,12 @@ private
 
             end
 
-        elsif(user.password) # check login password
-            if ( user.verify_password(password) )
+        elsif(user.login_password) # check login password
+            if ( user.verify_login_password(password) )
                 ret_val[:pass] = true
 
                 # if login, check if password is expired
-                if (authen_start.body.action_login? && user.password_expired?)
+                if (authen_start.body.action_login? && user.login_password_expired?)
                     ret_val[:pass] = false
                     ret_val[:msg] = @tacacs_daemon.password_expired_prompt
                 end
@@ -346,9 +346,9 @@ private
 
             username = authen_start.body.user
             user = @tacacs_daemon.users(username)
-            if (user && user.password)
-                if (Digest::MD5.digest(ppp_id + user.password + challenge) == response)
-                    if (user.password_expired?)
+            if (user && user.login_password)
+                if (Digest::MD5.digest(ppp_id + user.login_password + challenge) == response)
+                    if (user.login_password_expired?)
                         new_body.status_fail!
                         new_body.server_msg = @tacacs_daemon.password_expired_prompt
                     elsif (user.login_acl)

@@ -126,71 +126,71 @@
 
 :users: 
   dustin: 
-    :password: password
+    :login_password: password
     :encryption: clear
     :command_authorization_profile: profile1
-    :enable: enable
+    :enable_password: enable
     :author_avpair: author_avpair1
     :login_acl: permit all
     :enable_acl: permit all
   tom: 
-    :password: password
+    :login_password: password
     :encryption: clear
-    :enable: enable
+    :enable_password: enable
     :login_acl: deny local
     :author_avpair: author_avpair1
     :enable_acl: permit all
   brad: 
     :enable_acl: deny local
-    :password: password
+    :login_password: password
     :encryption: clear
     :command_authorization_profile: profile2
-    :enable: enable
+    :enable_password: enable
     :author_avpair: author_avpair2
     :login_acl: permit all
   david: 
     :enable_acl: permit local
-    :password: password
+    :login_password: password
     :encryption: clear
     :command_authorization_profile: profile3
-    :enable: enable
+    :enable_password: enable
     :author_avpair: author_avpair3
     :login_acl: permit local
   marty: 
-    :password: password
-    :password_expires_on: '2008-01-01'
+    :login_password: password
+    :login_password_expires_on: '2008-01-01'
     :encryption: clear
-    :enable: enable
-    :enable_expires_on: '2008-01-01'
+    :enable_password: enable
+    :enable_password_expires_on: '2008-01-01'
     :login_acl: permit all
     :enable_acl: permit all
-    :password_lifespan: 90
-    :enable_lifespan: 90
+    :login_password_lifespan: 90
+    :enable_password_lifespan: 90
   earle: 
-    :password: password
+    :login_password: password
     :encryption: clear
-    :enable: enable
+    :enable_password: enable
     :disabled: true
     :login_acl: permit all
     :enable_acl: permit all
   adam: 
-    :password: password
+    :login_password: password
     :encryption: clear
     :user_group: group1
-    :enable: enable
+    :enable_password: enable
   ethan: 
-    :password: password
+    :login_password: password
     :encryption: clear
     :user_group: group2
-    :enable: enable
+    :enable_password: enable
   chip: 
-    :password: password
+    :login_password: password
     :encryption: clear
     :command_authorization_profile: profile4
-    :enable: enable
+    :enable_password: enable
     :author_avpair: author_avpair4
   jon: 
-    :password: password
+    :login_password: password
     :encryption: clear
 
 :user_groups: 

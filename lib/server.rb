@@ -90,15 +90,15 @@ module TacacsPlus
 #  is a Hash with the keys:
 #  * :command_authorization_profile - the name of a command authorization profile to use for this user.
 #  * :disabled - set True if user account is disabled
-#  * :enable - the user enable password.
+#  * :enable_password - the user enable password.
 #  * :enable_acl - the name of an ACL specifying devices on which the user may request enable.
-#  * :enable_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
-#  * :enable_lifespan - Integer representing the number of days enable password is considered valid (0 = forever)
+#  * :enable_password_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
+#  * :enable_password_lifespan - Integer representing the number of days enable password is considered valid (0 = forever)
 #  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1').
 #  * :login_acl - the name of an ACL specifying devices on which the user may login.
-#  * :password - the login password.
-#  * :password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
-#  * :password_lifespan - Integer representing the number of days password is considered valid (0 = forever)
+#  * :login_password - the login password.
+#  * :login_password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
+#  * :login_password_lifespan - Integer representing the number of days password is considered valid (0 = forever)
 #  * :salt - the salt value used as part of an sha1 hashed password.
 #  * :author_avpair - the name of a shell profile for the group.
 #  * :user_group - the name of a user group to which this user belongs.

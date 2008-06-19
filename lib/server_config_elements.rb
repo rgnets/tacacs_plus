@@ -1133,28 +1133,28 @@ class TacacsUser #:nodoc:
 #==============================================================================#
 
     attr_reader :author_avpair, :command_authorization_profile,
-                :enable, :enable_acl, :login_acl, :password, :user_group
+                :enable_password, :enable_acl, :login_acl, :login_password, :user_group
 
     def initialize(tacacs_daemon,username,options)
         @username = username
         @author_avpair = nil
         @command_authorization_profile = nil
         @disabled = false
-        @enable = nil
-        @enable_expires_on = nil
-        @enable_lifespan = 0
+        @enable_password = nil
+        @enable_password_expires_on = nil
+        @enable_password_lifespan = 0
         @enable_acl = nil
         @encryption = nil
         @login_acl = nil
-        @password = nil
-        @password_expires_on = nil
-        @password_lifespan = 0
+        @login_password = nil
+        @login_password_expires_on = nil
+        @login_password_lifespan = 0
         @salt = nil
         @user_group = nil
 
         known_args = nil
-        known_args = [:command_authorization_profile, :disabled, :enable, :enable_expired, :enable_expires_on, :enable_lifespan,
-                      :enable_acl, :encryption,:login_acl, :password, :password_expired, :password_expires_on, :password_lifespan,
+        known_args = [:command_authorization_profile, :disabled, :enable_password, :enable_password_expires_on, :enable_password_lifespan,
+                      :enable_acl, :encryption,:login_acl, :login_password, :login_password_expires_on, :login_password_lifespan,
                       :salt, :author_avpair, :user_group]
 
         if (!options.kind_of?(Hash))
@@ -1226,44 +1226,44 @@ class TacacsUser #:nodoc:
             @encryption = options[:encryption].to_sym
         end
 
-        if (options.has_key?(:enable) && @encryption)
-            raise ArgumentError, "Expected String for :enable, but #{options[:enable].class} " +
-                                 "received for user '#{@username}'." if(!options[:enable].kind_of?(String))
+        if (options.has_key?(:enable_password) && @encryption)
+            raise ArgumentError, "Expected String for :enable_password, but #{options[:enable_password].class} " +
+                                 "received for user '#{@username}'." if(!options[:enable_password].kind_of?(String))
             if (@encryption == :clear)
-                raise  ArgumentError, "Enable password must be between 1 and 255 characters for user '#{@username}'." if (!(1..255).include?(options[:enable].length))
+                raise  ArgumentError, "Enable password must be between 1 and 255 characters for user '#{@username}'." if (!(1..255).include?(options[:enable_password].length))
             elsif (@encryption == :sha1)
-                raise  ArgumentError, "SHA1 hashed enable passwords must be exactly 40 characters for user '#{@username}'." if (options[:enable].length != 40)
+                raise  ArgumentError, "SHA1 hashed enable passwords must be exactly 40 characters for user '#{@username}'." if (options[:enable_password].length != 40)
             end
-            @enable = options[:enable]
-        elsif (options.has_key?(:enable) && !@encryption)
-            raise ArgumentError, "Argument :enable provided, but no encryption specified for user '#{@username}'."
+            @enable_password = options[:enable_password]
+        elsif (options.has_key?(:enable_password) && !@encryption)
+            raise ArgumentError, "Argument :enable_password provided, but no encryption specified for user '#{@username}'."
         end
 
-        if (options.has_key?(:password) && @encryption)
-            raise ArgumentError, "Expected String for :password, but #{options[:password].class} " +
-                                 "received for user '#{@username}'." if(!options[:password].kind_of?(String))
+        if (options.has_key?(:login_password) && @encryption)
+            raise ArgumentError, "Expected String for :login_password, but #{options[:login_password].class} " +
+                                 "received for user '#{@username}'." if(!options[:login_password].kind_of?(String))
             if (@encryption == :clear)
-                raise  ArgumentError, "Enable password must be between 1 and 255 characters for user '#{@username}'." if (!(1..255).include?(options[:password].length))
+                raise  ArgumentError, "Login password must be between 1 and 255 characters for user '#{@username}'." if (!(1..255).include?(options[:login_password].length))
             elsif (@encryption == :sha1)
-                raise  ArgumentError, "SHA1 hashed password passwords must be exactly 40 characters for user '#{@username}'." if (options[:password].length != 40)
+                raise  ArgumentError, "SHA1 hashed login passwords must be exactly 40 characters for user '#{@username}'." if (options[:login_password].length != 40)
             end
-            @password = options[:password]
-        elsif (options.has_key?(:password) && !@encryption)
-            raise ArgumentError, "Argument :password provided, but no encryption specified for user '#{@username}'."
+            @login_password = options[:login_password]
+        elsif (options.has_key?(:login_password) && !@encryption)
+            raise ArgumentError, "Argument :login_password provided, but no encryption specified for user '#{@username}'."
         end
 
-        if (options.has_key?(:enable_lifespan))
-            raise ArgumentError, "Expected Integer for :enable_lifespan, but #{options[:enable_lifespan].class} " +
-                                 "received for user '#{@username}'." if(!options[:enable_lifespan].kind_of?(Integer))
-            raise ArgumentError, "Argument :enable_lifespan must be 0 or greater for user '#{@username}'." if (options[:enable_lifespan] <  0)
-            @enable_lifespan = options[:enable_lifespan]
+        if (options.has_key?(:enable_password_lifespan))
+            raise ArgumentError, "Expected Integer for :enable_password_lifespan, but #{options[:enable_password_lifespan].class} " +
+                                 "received for user '#{@username}'." if(!options[:enable_password_lifespan].kind_of?(Integer))
+            raise ArgumentError, "Argument :enable_password_lifespan must be 0 or greater for user '#{@username}'." if (options[:enable_password_lifespan] <  0)
+            @enable_password_lifespan = options[:enable_password_lifespan]
         end
 
-        if (options.has_key?(:password_lifespan))
-            raise ArgumentError, "Expected Integer for :password_lifespan, but #{options[:password_lifespan].class} " +
-                                 "received for user '#{@username}'." if(!options[:password_lifespan].kind_of?(Integer))
-            raise ArgumentError, "Argument :password_lifespan must be 0 or greater for user '#{@username}'." if (options[:password_lifespan] <  0)
-            @password_lifespan = options[:password_lifespan]
+        if (options.has_key?(:login_password_lifespan))
+            raise ArgumentError, "Expected Integer for :login_password_lifespan, but #{options[:login_password_lifespan].class} " +
+                                 "received for user '#{@username}'." if(!options[:login_password_lifespan].kind_of?(Integer))
+            raise ArgumentError, "Argument :password_lifespan must be 0 or greater for user '#{@username}'." if (options[:login_password_lifespan] <  0)
+            @login_password_lifespan = options[:login_password_lifespan]
         end
 
         if (options.has_key?(:salt))
@@ -1280,19 +1280,19 @@ class TacacsUser #:nodoc:
             @disabled= options[:disabled]
         end
 
-        if (options.has_key?(:enable_expires_on))
+        if (options.has_key?(:enable_password_expires_on))
             begin
-                @enable_expires_on = Date.parse(options[:enable_expires_on])
+                @enable_password_expires_on = Date.parse(options[:enable_password_expires_on])
             rescue
-                raise ArgumentError, "Invalid date for :enable_expires_on for user '#{@username}'."
+                raise ArgumentError, "Invalid date for :enable_password_expires_on for user '#{@username}'."
             end
         end
 
-        if (options.has_key?(:password_expires_on))
+        if (options.has_key?(:login_password_expires_on))
             begin
-                @password_expires_on = Date.parse(options[:password_expires_on])
+                @login_password_expires_on = Date.parse(options[:login_password_expires_on])
             rescue
-                raise ArgumentError, "Invalid date for :password_expires_on for user '#{@username}'."
+                raise ArgumentError, "Invalid date for :login_password_expires_on for user '#{@username}'."
             end
         end
 
@@ -1308,15 +1308,15 @@ class TacacsUser #:nodoc:
         cfg[:author_avpair] = @author_avpair.name if (@author_avpair)
         cfg[:command_authorization_profile] = @command_authorization_profile.name if (@command_authorization_profile)
         cfg[:disabled] = self.disabled? if (self.disabled?)
-        cfg[:enable] = @enable if (@enable)
-        cfg[:enable_expires_on] = @enable_expires_on.to_s if (@enable_expires_on)
-        cfg[:enable_lifespan] = @enable_lifespan if (@password_lifespan != 0)
+        cfg[:enable_password] = @enable_password if (@enable_password)
+        cfg[:enable_password_expires_on] = @enable_password_expires_on.to_s if (@enable_password_expires_on)
+        cfg[:enable_password_lifespan] = @enable_password_lifespan if (@enable_password_lifespan != 0)
         cfg[:enable_acl] = @enable_acl.name if (@enable_acl)
         cfg[:encryption] = @encryption.to_s if (@encryption)
         cfg[:login_acl] = @login_acl.name if (@login_acl)
-        cfg[:password] = @password if (@password)
-        cfg[:password_expires_on] = @password_expires_on.to_s if (@password_expires_on)
-        cfg[:password_lifespan] = @password_lifespan if (@password_lifespan != 0)
+        cfg[:login_password] = @login_password if (@login_password)
+        cfg[:login_password_expires_on] = @login_password_expires_on.to_s if (@login_password_expires_on)
+        cfg[:login_password_lifespan] = @login_password_lifespan if (@login_password_lifespan != 0)
         cfg[:salt] = @salt if (@salt)
         cfg[:user_group] = @user_group.name if (@user_group)
         return(cfg)
@@ -1331,27 +1331,27 @@ class TacacsUser #:nodoc:
     end
 
 #==============================================================================#
-# enable_expired?
+# enable_password_expired?
 #==============================================================================#
 
-    def enable_expired?
-        return(true) if (@enable_lifespan > 0 && @enable_expires_on <= Date.today)
+    def enable_password_expired?
+        return(true) if (@enable_password_lifespan > 0 && @enable_password_expires_on <= Date.today)
         return(false)
     end
 
 #==============================================================================#
-# enable=
+# enable_password=
 #==============================================================================#
 
-    def enable=(pwd)
+    def enable_password=(pwd)
         if (@encryption == :sha1)
-            @enable = encrypt_password(pwd)
+            @enable_password = encrypt_password(pwd)
         else
-            @enable = pwd
+            @enable_password = pwd
         end
 
-        if (@password_lifespan != 0)
-            @enable_expires_on = Date.today + @password_lifespan
+        if (@enable_password_lifespan != 0)
+            @enable_password_expires_on = Date.today + @enable_password_lifespan
         end
     end
 
@@ -1363,47 +1363,47 @@ class TacacsUser #:nodoc:
     end
 
 #==============================================================================#
-# password=
+# login_password=
 #==============================================================================#
 
-    def password=(pwd)
+    def login_password=(pwd)
         if (@encryption == :sha1)
-            @password = encrypt_password(pwd)
+            @login_password = encrypt_password(pwd)
         else
-            @password = pwd
+            @login_password = pwd
         end
 
-        if (@password_lifespan != 0)
-            @password_expires_on = Date.today + @password_lifespan
+        if (@login_password_lifespan != 0)
+            @login_password_expires_on = Date.today + @login_password_lifespan
         end
     end
 
 #==============================================================================#
-# password_expired?
+# login_password_expired?
 #==============================================================================#
 
-    def password_expired?
-        return(true) if (@password_lifespan > 0 && @password_expires_on <= Date.today)
+    def login_password_expired?
+        return(true) if (@login_password_lifespan > 0 && @login_password_expires_on <= Date.today)
         return(false)
     end
 
 #==============================================================================#
-# verify_enable
+# verify_enable_password
 #==============================================================================#
 
-    def verify_enable(pwd)
+    def verify_enable_password(pwd)
         pwd = encrypt_password(pwd) if (@encryption == :sha1)
-        return(true) if (pwd == @enable)
+        return(true) if (pwd == @enable_password)
         return(false)
     end
 
 #==============================================================================#
-# verify_password
+# verify_login_password
 #==============================================================================#
 
-    def verify_password(pwd)
+    def verify_login_password(pwd)
         pwd = encrypt_password(pwd) if (@encryption == :sha1)
-        if (pwd == @password)
+        if (pwd == @login_password)
             return(true)
         end
         return(false)
