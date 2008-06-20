@@ -83,19 +83,19 @@ module TacacsPlus
 #  is a Hash with the keys:
 #  * :command_authorization_profile - the name of a command authorization profile to use for this group. 
 #  * :enable_acl - the name of an ACL specifying devices on which users may request enable.
-#  * :login_acl - the name of an ACL specifying devices on which users may login.
-#  * :author_avpair - the name of a shell profile for the group.
+#  * :login_acl - the name of an ACL specifying devices on which users may login. (optional)
+#  * :author_avpair - the name of a shell profile for the group. (optional)
 #
 #* :users - Contains a Hash of Hashes. The key indicates the username, and the value
 #  is a Hash with the keys:
 #  * :command_authorization_profile - the name of a command authorization profile to use for this user.
 #  * :disabled - set True if user account is disabled
 #  * :enable_password - the user enable password.
-#  * :enable_acl - the name of an ACL specifying devices on which the user may request enable.
+#  * :enable_acl - the name of an ACL specifying devices on which the user may request enable. (optional)
 #  * :enable_password_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :enable_password_lifespan - Integer representing the number of days enable password is considered valid (0 = forever)
 #  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1').
-#  * :login_acl - the name of an ACL specifying devices on which the user may login.
+#  * :login_acl - the name of an ACL specifying devices on which the user may login. (optional)
 #  * :login_password - the login password.
 #  * :login_password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :login_password_lifespan - Integer representing the number of days password is considered valid (0 = forever)

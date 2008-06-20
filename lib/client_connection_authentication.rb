@@ -297,12 +297,6 @@ private
                     ret_val[:msg] = "Authentication denied due to ACL restrictions on user."
                     fail_log_msg = "Authentication denied by ACL '#{acl.name}' #{match_results[:by]}."
                 end
-            elsif (@tacacs_daemon.default_policy == :deny)
-                ret_val[:pass] = false
-                ret_val[:msg] = "Authentication denied due to ACL restrictions on user."
-                fail_log_msg = "Authentication denied due to default policy."
-            else
-                pass_log_msg = "Authentication permitted due to default policy."
             end
         end
 
