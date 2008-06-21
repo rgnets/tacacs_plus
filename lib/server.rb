@@ -425,7 +425,7 @@ private
                                 begin
                                     client_connection.process!
                                 rescue Exception => err
-                                    STDERR.puts("\n\n#### CAUGHT EXCEPTION WHILE PROCESSING CLIENT REQUEST ####\n #{err}.\n\n#{err.backtrace.join("\n")}")
+                                    STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - CAUGHT EXCEPTION WHILE PROCESSING CLIENT REQUEST ####\n #{err}.\n\n#{err.backtrace.join("\n")}")
                                     client_socket.close if (!client_socket.closed?)
                                 end
                             end
@@ -437,7 +437,7 @@ private
                     @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', "message=#{msg}"])
                     Thread.exit
                 rescue Exception => err
-                    STDERR.puts("\n\n#### CAUGHT EXCEPTION ON NEW REQUEST ####\n #{err}.\n\n#{err.backtrace.join("\n")}")
+                    STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - CAUGHT EXCEPTION ON NEW REQUEST ####\n #{err}.\n\n#{err.backtrace.join("\n")}")
                 end
             end
         end

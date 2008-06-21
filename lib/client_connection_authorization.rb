@@ -14,6 +14,7 @@ private
         # set pass/fail based on default policy. we may change this
         # setting below depending whether or not a command_authorization_profile
         # is configured
+        loglevel = :warn # specify this so that whitelist commands may be logged at a higher level
         message = ''
         whitelisted = false
 
@@ -34,6 +35,7 @@ private
                     whitelisted = true
                     new_body.status_passadd!
                     message = "User permitted by whitelisted rule: #{rule}."
+                    loglevel = :info
                     break
                 end
             end
@@ -98,7 +100,7 @@ private
         end
 
         # log this attempt
-        @tacacs_daemon.log(:warn,['msg_type=Authorization', "message=#{message}", "command=#{command}", "status=#{new_body.xlate_status}"],author_request,@peeraddr)
+        @tacacs_daemon.log(loglevel,['msg_type=Authorization', "message=#{message}", "command=#{command}", "status=#{new_body.xlate_status}"],author_request,@peeraddr)
 
         return(nil)
     end
@@ -110,9 +112,6 @@ private
 # issue avpairs representing shell settings
 #
     def issue_settings(new_body, username, service, author_request)
-        # check for user/group author_avpair settings and return to client
-        author_avpair = []
-
         # fail if user unknown
         user = @tacacs_daemon.users(username)
         if (!user)
