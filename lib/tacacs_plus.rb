@@ -253,6 +253,8 @@ end
             elsif (avpair =~ /\*/)
                 mandatory = false
                 attribute,value = avpair.split('*',2)
+            elsif (avpair == '')
+                attribute,value = ['','']
             else
                 raise ArgumentError, "Improperly formed AVPair String '#{avpair}'."
             end

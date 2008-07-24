@@ -1,17 +1,17 @@
 --- 
-:description: login pass. no acl on user chip.
+:description: login pass. no acl on user jon.
 
 :client_log: []
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Authentication permitted (no ACL applied).\tstatus=Pass\tclient=127.0.0.1\taction=Login\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=chip"
+- "msg_type=Authentication\tmessage=Authentication permitted (no ACL applied).\tstatus=Pass\tclient=127.0.0.1\taction=Login\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=jon"
 
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct 
   header: !ruby/object:TacacsPlus::TacacsHeader 
     flags: 0
-    length: 12
+    length: 11
     major_version: 12
     minor_version: 0
     seq_no: 1
@@ -28,8 +28,8 @@
     rem_addr: 
     rem_addr_len: 0
     service: 0
-    user: chip
-    user_len: 4
+    user: jon
+    user_len: 3
 - !ruby/struct:TacacsPlus::PacketStruct 
   header: !ruby/object:TacacsPlus::TacacsHeader 
     flags: 0

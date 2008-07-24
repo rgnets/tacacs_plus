@@ -11,7 +11,7 @@ end
 logger = Logger.new(STDOUT)
 config[:tacacs_daemon][:logger] = logger
 config[:tacacs_daemon][:log_level] = 0
-#config[:tacacs_daemon][:dump_file] = STDOUT
+config[:tacacs_daemon][:dump_file] = STDOUT
 tac_server = TacacsPlus::Server.new(config)
 
 trap("INT"){ tac_server.stop }

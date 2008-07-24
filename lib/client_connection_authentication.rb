@@ -297,6 +297,8 @@ private
                     ret_val[:msg] = "Authentication denied due to ACL restrictions on user."
                     fail_log_msg = "Authentication denied by ACL '#{acl.name}' #{match_results[:by]}."
                 end
+            else
+                pass_log_msg = "Authentication permitted (no ACL applied)."
             end
         end
 

@@ -193,18 +193,24 @@ private
         self.port_len = body.slice!(0)
         self.rem_addr_len = body.slice!(0)
         self.arg_cnt = body.slice!(0)
-       
+
         # variable fields
         @arg_lens = (body.slice!(0..(@arg_cnt - 1))).unpack('C*') if (@arg_cnt != 0)
         @user = body.slice!(0..(@user_len - 1)) if (@user_len != 0)
         @port = body.slice!(0..(@port_len - 1)) if (@port_len != 0)
         @rem_addr = body.slice!(0..(@rem_addr_len - 1)) if (@rem_addr_len != 0)
-       
+
         if (self.arg_cnt != 0)
             @args = []
-            @arg_lens.each {|x| @args.push( body.slice!( 0..(x - 1) ) )}
+            @arg_lens.each do |x|
+                if (x > 0)
+                    @args.push( body.slice!( 0..(x - 1) ) )
+                else
+                    @args.push('')
+                end
+            end
         end
-   
+
         return(nil)
     end
 

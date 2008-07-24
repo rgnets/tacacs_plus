@@ -52,10 +52,6 @@
   - :permission: deny
     :ip: any
 
-  permit all:
-  - :permission: permit
-    :ip: any
-
   permit all dc:
   - :permission: permit
     :network_object_group: datacenter1
@@ -73,21 +69,18 @@
 #### COMMAND AUTHORIZATION PROFILES ####
 :command_authorization_profiles:
   read only:
-  - :acl: permit all
-    :shell_command_object_group: show
+  - :shell_command_object_group: show
 
 
   basic user:
-  - :acl: permit all
-    :shell_command_object_group: show
+  - :shell_command_object_group: show
   - :acl: permit all dc
     :command: ^configure terminal <cr>$
   - :acl: permit all dc
     :shell_command_object_group: basic configuration
 
   advanced user:
-  - :acl: permit all
-    :command: .*
+  - :command: .*
 
   localhost:
   - :acl: permit localhost
@@ -97,8 +90,7 @@
 
 #### COMMAND AUTHORIZATION WHITELIST ####
 :command_authorization_whitelist: 
-  - :acl: permit all
-    :shell_command_object_group: whitelist
+  - :shell_command_object_group: whitelist
 
 
 
@@ -122,15 +114,13 @@
     - priv-lvl=15
 
   restrictive:
-  - :acl: permit all
-    :service: shell
+  - :service: shell
     :avpairs:
     - idletime=1
     - timeout=1
 
   loose:
-  - :acl: permit all
-    :service: shell
+  - :service: shell
     :avpairs:
     - priv-lvl=15
 
@@ -141,19 +131,14 @@
   read only:
     :command_authorization_profile: read only
     :enable_acl: deny all
-    :login_acl: permit all
     :author_avpair: restrictive
 
   basic user:
     :command_authorization_profile: basic user
-    :enable_acl: permit all
-    :login_acl: permit all
     :author_avpair: basic user
 
   advanced user:
     :command_authorization_profile: advanced user
-    :enable_acl: permit all
-    :login_acl: permit all
     :author_avpair: basic user
 
 
@@ -164,30 +149,30 @@
   user1:
     :encryption: sha1
     :salt: V5AVgebMv9u50toy9VXEgabeHhgpWnDo
-    :enable: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
-    :password: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
+    :enable_password: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
+    :login_password: 259ef5def42d8c29c67242b551887bad4cd12f1d  #password
     :user_group: advanced user
     :author_avpair: loose
 
   user2:
     :encryption: clear
-    :enable: password
-    :password: password
+    :enable_password: password
+    :login_password: password
     :user_group: basic user
 
   user3:
     :encryption: clear
-    :enable: password
-    :password: password
+    :enable_password: password
+    :login_password: password
     :user_group: read only
 
   user4:
     :command_authorization_profile: localhost
     :encryption: clear
-    :enable: password
+    :enable_password: password
     :enable_acl: permit localhost
     :login_acl: permit localhost
-    :password: password
+    :login_password: password
     :author_avpair: localhost
 
 
@@ -198,8 +183,6 @@
   :ip: 127.0.0.1
   :key: s0mek3y
   :log_level: 0
-  :logger: /tmp/aaa.log   # specify absolute path here
-  #:dump_file: /tmp/dump.log   # specify absolute path here
   :login_prompt: |-
     Company XYZ
     User Access Verification.

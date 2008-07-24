@@ -5,7 +5,7 @@ require 'rake/gempackagetask'
 spec = Gem::Specification.new do |s|
     s.platform  =   Gem::Platform::RUBY
     s.name      =   "tacacs_plus"
-    s.version   =   "0.0.4"
+    s.version   =   "1.0.0"
     s.author    =   "Dustin Spinhirne"
     s.summary   =   "TacacsPlus is a module and collection of classes for " +
                     "working with the TACACS+ protocol created by Cisco Systems Inc."

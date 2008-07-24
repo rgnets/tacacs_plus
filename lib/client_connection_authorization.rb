@@ -174,8 +174,14 @@ private
             cmd = nil
             args = []
             begin
-                # first arg should be 'service'
-                av = TacacsPlus.validate_avpair(author_request.body.args.shift)
+                # some clients wrongly send blank as the first arg, so we need to ignore them.
+                av = nil
+                while(1)
+                    av = TacacsPlus.validate_avpair(author_request.body.args.shift)
+                    break if (av[:attribute] != '')
+                end
+
+                # first arg should be 'service'.
                 if (av[:attribute] != 'service')
                     raise "Attribute 'service' is required to be the first argument for authorization requests."
                 else

@@ -58,7 +58,7 @@ module TacacsPlus
 #  indicates the object group name, and the value is an Array of shell commands.
 #
 #* :tacacs_daemon - Contains a Hash with the keys:
-#  * :default_policy - defines how to handle users with no login/enable acls, or no command authorization profile.
+#  * :default_policy - defines how to handle users with no login/enable acls or no command authorization profile.
 #                      must be :permit or :deny. defaults to :deny.
 #  * :delimiter - the delmitation character used in logging. defaults to \t.
 #  * :disabled_prompt - message to display to user if their account is disabled
