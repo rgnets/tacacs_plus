@@ -241,20 +241,21 @@ private
         if (!user) # fail if user unknown
             fail_log_msg = 'Unknown user attempted authentication.'
 
-        elsif (user.disabled?)
-            ret_val[:msg] = @tacacs_daemon.disabled_prompt
-            fail_log_msg = 'Authentication attempt from disabled account.'
-
         elsif (enable) # check enable password
             if (user.enable_password)
                 if ( user.verify_enable_password(password) )
-                   ret_val[:pass] = true
+                   if (!user.disabled?)
+                      ret_val[:pass] = true
+                      # if login, check if enable is expired
+                      if (authen_start.body.action_login? && user.enable_password_expired?)
+                          ret_val[:pass] = false
+                          ret_val[:msg] = @tacacs_daemon.password_expired_prompt
+                      end
+                   else
+                      ret_val[:msg] = @tacacs_daemon.disabled_prompt
+                      fail_log_msg = 'Authentication attempt from disabled account.'
+                   end
 
-                   # if login, check if enable is expired
-                    if (authen_start.body.action_login? && user.enable_password_expired?)
-                        ret_val[:pass] = false
-                        ret_val[:msg] = @tacacs_daemon.password_expired_prompt
-                    end
                 end
 
                 # get acl for enable access. always prefer one set on user over one set on group
@@ -268,13 +269,18 @@ private
 
         elsif(user.login_password) # check login password
             if ( user.verify_login_password(password) )
-                ret_val[:pass] = true
+                if (!user.disabled?)
+                      ret_val[:pass] = true
+                      # if login, check if password is expired
+                      if (authen_start.body.action_login? && user.login_password_expired?)
+                          ret_val[:pass] = false
+                          ret_val[:msg] = @tacacs_daemon.password_expired_prompt
+                      end
+                   else
+                      ret_val[:msg] = @tacacs_daemon.disabled_prompt
+                      fail_log_msg = 'Authentication attempt from disabled account.'
+                   end
 
-                # if login, check if password is expired
-                if (authen_start.body.action_login? && user.login_password_expired?)
-                    ret_val[:pass] = false
-                    ret_val[:msg] = @tacacs_daemon.password_expired_prompt
-                end
             end
 
             # get acl for login access. always prefer one set on user over one set on group
