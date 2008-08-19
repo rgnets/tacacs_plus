@@ -700,6 +700,7 @@ class TacacsDaemon #:nodoc:
         @dump_file = nil
         @ip = '0.0.0.0'
         @key = nil
+        @log_levels = {:debug => 0, :info => 1, :warn => 2, :error => 3, :fail => 4}
         @log_accounting = true
         @log_authentication = true
         @log_authorization = true
@@ -960,7 +961,7 @@ class TacacsDaemon #:nodoc:
 # log to @logger
 #
     def log(level,fields,pkt=nil,peeraddr=nil,username=nil)
-        return(nil) if (!@logger)
+        return(nil) if (!@logger || @log_levels[level] < @logger_level)
         write_log = true
         fields.push("tacacs_daemon=#{@name}") if (@name)
         fields.push("client=#{peeraddr.ip}") if (peeraddr)
@@ -1009,10 +1010,8 @@ class TacacsDaemon #:nodoc:
                 @logger.warn(fields)
             elsif (level == :info)
                 @logger.info(fields)
-            elsif (level == :debug)
-                @logger.debug(fields)
             else
-                raise "Unknown log level #{level}"
+                @logger.debug(fields)
             end
         end
 

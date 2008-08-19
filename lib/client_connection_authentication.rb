@@ -304,7 +304,7 @@ private
                     fail_log_msg = "Authentication denied by ACL '#{acl.name}' #{match_results[:by]}."
                 end
             else
-                pass_log_msg = "Authentication permitted (no ACL applied)."
+                pass_log_msg = "Authentication permitted."
             end
         end
 
