@@ -715,6 +715,15 @@ class TacacsDaemon #:nodoc:
         @testing = false
         @sock_timeout = 30
 
+        # elements init
+        @acls = {}
+        @author_avpairs = {}
+        @command_authorization_profiles = {}
+        @network_object_groups = {}
+        @shell_command_object_groups = {}
+        @user_groups = {}
+        @users = {}
+
         if (!options.kind_of?(Hash))
             raise ArgumentError, "Expected Hash, but #{options.class} provided."
         end

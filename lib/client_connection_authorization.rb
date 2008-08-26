@@ -44,7 +44,7 @@ private
 
         # if no whitelist match
         if (!whitelisted)
-            user = @tacacs_daemon.users(username)
+            user = @tacacs_daemon.users(username) if (username)
             # fail if user unknown
             if (!user)
                 new_body.status_fail!
@@ -113,7 +113,7 @@ private
 #
     def issue_settings(new_body, username, service, author_request)
         # fail if user unknown
-        user = @tacacs_daemon.users(username)
+        user = @tacacs_daemon.users(username) if (username)
         if (!user)
             new_body.status_fail!
             @tacacs_daemon.log(:warn,['msg_type=Authorization', "message=Authorization attempt from unknown user.", "status=#{new_body.xlate_status}"],author_request,@peeraddr)

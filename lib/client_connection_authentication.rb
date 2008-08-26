@@ -157,7 +157,7 @@ private
                         new_body.server_msg = "Verify Password: "
                     else
                         if (session.getpass == password)
-                            user = @tacacs_daemon.users(username)
+                            user = @tacacs_daemon.users(username) if (username)
 
                             if (session.authen_start.body.service_enable?)
                                 user.enable_password = password
@@ -235,7 +235,7 @@ private
         ret_val = {:pass => false, :msg => "Username or password incorrect."}
         ret_val[:msg] = "Password incorrect." if (enable)
         fail_log_msg = "Authentication failed."
-        user = @tacacs_daemon.users(username)
+        user = @tacacs_daemon.users(username) if (username)
 
         # check for active account, and valid pw
         if (!user) # fail if user unknown
@@ -347,7 +347,7 @@ private
             response = authen_start.body.data[challenge_len+1, authen_start.body.data_len-1]
 
             username = authen_start.body.user
-            user = @tacacs_daemon.users(username)
+            user = @tacacs_daemon.users(username) if (username)
             if (user && user.login_password)
                 if (Digest::MD5.digest(ppp_id + user.login_password + challenge) == response)
                     if (user.login_password_expired?)
