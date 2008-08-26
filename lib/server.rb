@@ -197,9 +197,13 @@ class Server
 # Restart the server with a new configuration. Options are the same as with #new.
 #
     def restart_with(options)
-        stop("TACACS+ server restart requested (updated configuration).") if (@listener.alive?)
-        process_options(options)
-        start_server
+        begin
+            process_options(options)
+            stop("TACACS+ server restart requested (updated configuration).") if (@listener.alive?)
+            start_server
+        rescue Exception => error
+            STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - CAUGHT EXCEPTION ON TacacsPlus::Server#restart_with RESTART FAILED####\n #{error}.\n\n#{error.backtrace.join("\n")}")
+        end
         return(nil)
     end
 
