@@ -788,12 +788,10 @@ class TacacsDaemon #:nodoc:
         end
 
         if (options.has_key?(:logger))
-            if ( options[:logger].kind_of?(Logger) )
-                @logger = options[:logger]
-            elsif ( options[:logger].kind_of?(String) )
+            if ( options[:logger].kind_of?(String) )
                 @log_file = options[:logger]
             else
-                raise ArgumentError, "Expected Logger or String for argument :logger, but #{options[:logger].class} provided."
+                @logger = options[:logger]
             end
         end
 

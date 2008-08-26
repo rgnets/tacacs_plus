@@ -79,10 +79,8 @@ attr_reader :key, :logger, :dump_file, :port, :server, :session_id, :sock_timeou
                 rescue Exception => error
                     raise ArgumentError, "Error with argument :logger: #{error}"
                 end
-            elsif (options[:logger].kind_of?(Logger))
-                @logger = options[:logger]
             else
-                raise ArgumentError, "Expected Logger for :logger, but #{options[:logger].class} provided."
+                @logger = options[:logger]
             end
         end
 
@@ -147,9 +145,6 @@ attr_reader :key, :logger, :dump_file, :port, :server, :session_id, :sock_timeou
     end
 
     def logger=(logger)
-        if (!logger.kind_of?(Logger))
-            raise ArgumentError, "Expected Logger, but #{logger.class} provided."
-        end
         @logger = logger
     end
 

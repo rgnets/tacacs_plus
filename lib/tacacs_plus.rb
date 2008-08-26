@@ -27,7 +27,19 @@ module TacacsPlus
 
 # PUBLIC CLASSES
 
-# Used to signal a TacacsPlus::Server to reload its logger
+# subclass logger so that i can control the output format
+class ServerLogger < Logger
+  def delimiter=(val)
+    @delimiter = val
+  end
+
+  def format_message(severity, timestamp, progname, msg)
+    levels = {'DEBUG' => 0, 'INFO' => 1, 'WARN' => 2, 'ERROR' => 3, 'FATAL' => 4, 'UNKNOWN' => 5}
+    "timestamp=#{timestamp.strftime("%Y-%m-%d %H:%M:%S %Z")}#{@delimiter}level=#{levels[severity]}#{@delimiter}#{msg}\n"
+  end
+end
+
+# Used to signal a TacacsPlus::Server to reinitialize its logger
 class LoggerInit < StandardError #:nodoc:
 end
 

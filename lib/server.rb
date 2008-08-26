@@ -194,7 +194,7 @@ class Server
 # restart_logger()
 #==============================================================================#
 
-# Re-initialize the logger
+# If :logger option is the name of a file, then re-initialize the logger
 #
     def restart_logger()
         if (@listener.alive?)
@@ -217,7 +217,7 @@ class Server
             stop("TACACS+ server restart requested (updated configuration).") if (@listener.alive?)
             start_server
         rescue Exception => error
-            STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - CAUGHT EXCEPTION ON TacacsPlus::Server#restart_with RESTART FAILED####\n #{error}.\n\n#{error.backtrace.join("\n")}")
+            STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - RESTART FAILED. CAUGHT EXCEPTION ON TacacsPlus::Server#restart_with ####\n #{error}.\n\n#{error.backtrace.join("\n")}")
         end
         return(nil)
     end
@@ -229,7 +229,8 @@ class Server
 # Start the TACACS Plus Server.
 #
     def start()
-        start_server
+        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', 
+                           "message=Starting TACACS+ server with pid #{Process.pid}."]) if (start_server)
         return(nil)
     end
 
@@ -281,7 +282,8 @@ private
         if (@tacacs_daemon.log_file)
             begin
                 old = @tacacs_daemon.logger
-                @tacacs_daemon.logger = Logger.new(@tacacs_daemon.log_file)
+                @tacacs_daemon.logger = TacacsPlus::ServerLogger.new(@tacacs_daemon.log_file)
+                @tacacs_daemon.logger.delimiter = @tacacs_daemon.delimiter
                 old.close if (old)
             rescue Exception => error
                 raise "Error opening logger #{@tacacs_daemon.log_file}: #{error}"
@@ -427,7 +429,6 @@ private
         end
 
         init_logger!
-        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', "message=Starting TACACS+ server with pid #{Process.pid}."])
         @server = TCPServer.new(@tacacs_daemon.ip, @tacacs_daemon.port)
         @clients = ThreadGroup.new
         BasicSocket.do_not_reverse_lookup = true
