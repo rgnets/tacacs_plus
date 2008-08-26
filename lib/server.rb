@@ -191,6 +191,21 @@ class Server
     end
 
 #==============================================================================#
+# restart_logger()
+#==============================================================================#
+
+# Re-initialize the logger
+#
+    def restart_logger()
+        if (@listener.alive?)
+            @listener.raise( LoggerInit.new )
+            return(true)
+        else
+            return(false)
+        end
+    end
+
+#==============================================================================#
 # restart_with()
 #==============================================================================#
 
@@ -254,6 +269,28 @@ class Server
 
 
 private
+
+#==============================================================================#
+# init_logger()
+#==============================================================================#
+
+# start the logger
+#
+
+    def init_logger!
+        if (@tacacs_daemon.log_file)
+            begin
+                old = @tacacs_daemon.logger
+                @tacacs_daemon.logger = Logger.new(@tacacs_daemon.log_file)
+                old.close if (old)
+            rescue Exception => error
+                raise "Error opening logger #{@tacacs_daemon.log_file}: #{error}"
+            end
+        end
+
+        @tacacs_daemon.logger.level = @tacacs_daemon.logger_level
+    end
+
 
 
 #==============================================================================#
@@ -389,20 +426,8 @@ private
             end
         end
 
-        if (@tacacs_daemon.logger)
-            if (@tacacs_daemon.logger.kind_of?(String))
-                filename = @tacacs_daemon.logger
-                begin
-                    @tacacs_daemon.logger = Logger.new(filename)
-                rescue Exception => error
-                    raise "Error opening logger #{filename}: #{error}"
-                end
-            end
-
-            @tacacs_daemon.logger.level = @tacacs_daemon.logger_level
-            @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', "message=Starting TACACS+ server with pid #{Process.pid}."])
-        end
-
+        init_logger!
+        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', "message=Starting TACACS+ server with pid #{Process.pid}."])
         @server = TCPServer.new(@tacacs_daemon.ip, @tacacs_daemon.port)
         @clients = ThreadGroup.new
         BasicSocket.do_not_reverse_lookup = true
@@ -437,6 +462,8 @@ private
                     end
                     @clients.add(thread)
 
+                rescue LoggerInit
+                    init_logger!
                 rescue StopServer => msg
                     @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', "message=#{msg}"])
                     Thread.exit

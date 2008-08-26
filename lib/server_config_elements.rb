@@ -688,7 +688,7 @@ class TacacsDaemon #:nodoc:
 #==============================================================================#
 
     attr_reader :default_policy, :delimiter, :disabled_prompt, :ip, :key,
-                :log_accounting, :log_authentication, :log_authorization,
+                :log_file, :log_accounting, :log_authentication, :log_authorization,
                 :login_prompt, :name, :max_clients, :password_expired_prompt, :password_prompt,
                 :port, :testing, :sock_timeout
     attr_accessor :command_authorization_whitelist, :dump_file, :logger, :logger_level
@@ -704,6 +704,7 @@ class TacacsDaemon #:nodoc:
         @log_accounting = true
         @log_authentication = true
         @log_authorization = true
+        @log_file = nil
         @logger = nil
         @logger_level = 2
         @login_prompt = "User Access Verification\n\nUsername: "
@@ -787,8 +788,10 @@ class TacacsDaemon #:nodoc:
         end
 
         if (options.has_key?(:logger))
-            if (options[:logger].kind_of?(Logger) || options[:logger].kind_of?(String))
+            if ( options[:logger].kind_of?(Logger) )
                 @logger = options[:logger]
+            elsif ( options[:logger].kind_of?(String) )
+                @log_file = options[:logger]
             else
                 raise ArgumentError, "Expected Logger or String for argument :logger, but #{options[:logger].class} provided."
             end

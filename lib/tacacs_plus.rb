@@ -27,6 +27,10 @@ module TacacsPlus
 
 # PUBLIC CLASSES
 
+# Used to signal a TacacsPlus::Server to reload its logger
+class LoggerInit < StandardError #:nodoc:
+end
+
 # Used to signal a TacacsPlus::Server to cease running
 class StopServer < StandardError #:nodoc:
 end
