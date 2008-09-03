@@ -281,10 +281,8 @@ private
     def init_logger!
         if (@tacacs_daemon.log_file)
             begin
-                old = @tacacs_daemon.logger
                 @tacacs_daemon.logger = TacacsPlus::ServerLogger.new(@tacacs_daemon.log_file)
                 @tacacs_daemon.logger.delimiter = @tacacs_daemon.delimiter
-                old.close if (old)
             rescue Exception => error
                 raise "Error opening logger #{@tacacs_daemon.log_file}: #{error}"
             end

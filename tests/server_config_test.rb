@@ -577,12 +577,6 @@ class TestServer < Test::Unit::TestCase
         assert_raise(ArgumentError){TacacsPlus::Server.new(config)}
     end
 
-    def test_arg_tacacs_logger_not_logger_error
-        config = @config.dup
-        config[:tacacs_daemon][:logger] = 1
-        assert_raise(ArgumentError){TacacsPlus::Server.new(config)}
-    end
-
     def test_arg_tacacs_login_prompt_not_string_error
         config = @config.dup
         config[:tacacs_daemon][:login_prompt] = 1

@@ -1011,7 +1011,7 @@ class TacacsDaemon #:nodoc:
 
         if (write_log)
             fields = fields.join(@delimiter)
-            fields.gsub!(/[\x00-\x08,\x0a-\x1f,\x7f-\xff]/, '.') # get rid of non-print characters
+            fields.gsub!(/[\x00-\x08\x0a-\x1f\x7f-\xff]/, '.') # get rid of non-print characters
 
             if (level == :fatal)
                 @logger.fatal(fields)

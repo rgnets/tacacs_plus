@@ -24,12 +24,6 @@ class TestClient < Test::Unit::TestCase
         assert_raise(ArgumentError){TacacsPlus::Client.new(config)}
     end
 
-    def test_logger_not_string_error
-        config = @config.dup
-        config[:logger] = 1
-        assert_raise(ArgumentError){TacacsPlus::Client.new(config)}
-    end
-
     def test_dump_file_error
         config = @config.dup
         config[:dump_file] = 1
