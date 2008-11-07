@@ -1,8 +1,6 @@
-* reload of server spews errors to error log
-* review default policy and how it behaves - documentation may be wrong for login/enable acl
-* explain usage of password_lifespan in doc
+==Version x.x.x
 * check into sock timeout. make this separate for each packet recvd
-* review doc on server. make sure to explain optional vs required fields
+
 
 ==Version 1.0.0
 * added ability to disable logging for any one of the A's in AAA

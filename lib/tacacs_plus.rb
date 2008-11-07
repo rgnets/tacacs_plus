@@ -28,7 +28,7 @@ module TacacsPlus
 # PUBLIC CLASSES
 
 # subclass logger so that i can control the output format
-class ServerLogger < Logger
+class ServerLogger < Logger #:nodoc:
   def delimiter=(val)
     @delimiter = val
   end

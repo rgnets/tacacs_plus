@@ -58,8 +58,7 @@ module TacacsPlus
 #  indicates the object group name, and the value is an Array of shell commands.
 #
 #* :tacacs_daemon - Contains a Hash with the keys:
-#  * :default_policy - defines how to handle users with no login/enable acls or no command authorization profile.
-#                      must be :permit or :deny. defaults to :deny.
+#  * :default_policy - defines how to handle users with no login/enable acls or no command authorization profile. must be :permit or :deny. defaults to :deny.
 #  * :delimiter - the delmitation character used in logging. defaults to \t.
 #  * :disabled_prompt - message to display to user if their account is disabled
 #  * :dump_file - IO object for dumping output of packet captures.
@@ -83,25 +82,30 @@ module TacacsPlus
 #  is a Hash with the keys:
 #  * :command_authorization_profile - the name of a command authorization profile to use for this group. 
 #  * :enable_acl - the name of an ACL specifying devices on which users may request enable.
-#  * :login_acl - the name of an ACL specifying devices on which users may login. (optional)
-#  * :author_avpair - the name of a shell profile for the group. (optional)
+#  * :login_acl - the name of an ACL specifying devices on which users may login.
+#  * :author_avpair - the name of a shell profile for the group.
 #
 #* :users - Contains a Hash of Hashes. The key indicates the username, and the value
 #  is a Hash with the keys:
 #  * :command_authorization_profile - the name of a command authorization profile to use for this user.
 #  * :disabled - set True if user account is disabled
 #  * :enable_password - the user enable password.
-#  * :enable_acl - the name of an ACL specifying devices on which the user may request enable. (optional)
+#  * :enable_acl - the name of an ACL specifying devices on which the user may request enable.
 #  * :enable_password_expires_on - date on which the enable password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :enable_password_lifespan - Integer representing the number of days enable password is considered valid (0 = forever)
-#  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1').
-#  * :login_acl - the name of an ACL specifying devices on which the user may login. (optional)
+#  * :encryption - the encryptions scheme of the passwords ('clear' or 'sha1'). This field is required if any passwords are provided.
+#  * :login_acl - the name of an ACL specifying devices on which the user may login.
 #  * :login_password - the login password.
 #  * :login_password_expires_on - date on which the login password is considered expired (eg. '2008-01-01'). :password_lifespan must be > 0 for this option to take effect.
 #  * :login_password_lifespan - Integer representing the number of days password is considered valid (0 = forever)
 #  * :salt - the salt value used as part of an sha1 hashed password.
 #  * :author_avpair - the name of a shell profile for the group.
 #  * :user_group - the name of a user group to which this user belongs.
+#
+#A note on password expiry: The user options x_password_expires_on and x_password_lifespan are used to enforce password changes
+#by users. For example, if you want to force users to change their password every 30 days then you would set the x_password_lifespan
+#field to 30. If you do not want to force password changes ever, then you would leave the field blank (or set 0). The x_password_expires_on
+#field should never need to be specified as it is set automatically when the user changes their password. 
 #
 class Server
 

@@ -5,7 +5,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Authentication permitted by ACL 'permit all' (line 1).\tstatus=Pass\tclient=127.0.0.1\taction=Login\tauthen_type=ASCII\tport=vty2\tpriv_lvl=0\trem_addr=10.6.105.164\tservice=Login\tuser=dustin"
+- "msg_type=Authentication\tmessage=Authentication successful. User permitted by ACL 'permit all' (line 1).\tstatus=Pass\tclient=127.0.0.1\taction=Login\tauthen_type=ASCII\tport=vty2\tpriv_lvl=0\trem_addr=10.6.105.164\tservice=Login\tuser=dustin"
 
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct

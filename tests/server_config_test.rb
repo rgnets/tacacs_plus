@@ -117,15 +117,17 @@ class TestServer < Test::Unit::TestCase
             end
         end
 
-        @config[:users].each_pair do |k,v|
-            if (v != config[:users][k])
-                puts "\nConfigurations for user #{k} were not equal."
-                puts "\n\n#### EXPECTED ####"
-                puts v.to_yaml
-                puts "\n\n#### RECEIVED ####"
-                puts config[:users][k].to_yaml
-                puts "\n\n"
-                flunk()
+        @config[:users].each_pair do |username,opt|
+            opt.each_pair do |opt_name,opt_val|
+                if (opt_val != config[:users][username][opt_name])
+                    puts "\nConfigurations for user #{k} were not equal."
+                    puts "\n\n#### EXPECTED ####"
+                    puts v.to_yaml
+                    puts "\n\n#### RECEIVED ####"
+                    puts config[:users][k].to_yaml
+                    puts "\n\n"
+                    flunk()
+                end
             end
         end
     end

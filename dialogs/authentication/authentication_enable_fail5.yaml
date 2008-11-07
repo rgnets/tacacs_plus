@@ -5,7 +5,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Authentication denied by ACL 'deny local' (line 1).\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=adam"
+- "msg_type=Authentication\tmessage=Authentication failed. User denied by ACL 'deny local' (line 1).\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=adam"
 
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct 

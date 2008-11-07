@@ -5,7 +5,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Authentication permitted by ACL 'permit all' (line 1).\tstatus=Pass\tclient=127.0.0.1\taction=Change Password\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=marty"
+- "msg_type=Authentication\tmessage=Authentication successful. User permitted by ACL 'permit all' (line 1).\tstatus=Pass\tclient=127.0.0.1\taction=Change Password\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=marty"
 - "msg_type=Authentication\tmessage=Password has been updated.\tstatus=Pass\tclient=127.0.0.1\taction=Change Password\tauthen_type=ASCII\tport=\tpriv_lvl=1\trem_addr=\tservice=None\tuser=marty"
 
 

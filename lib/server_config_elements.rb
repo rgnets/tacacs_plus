@@ -518,7 +518,9 @@ class CommandAuthorizationWhitelistEntry #:nodoc:
 
 # config hash for this object
     def configuration
-        cfg = {:acl => @acl.name}
+        cfg = {}
+        cfg[:acl] = @acl.name if (@acl)
+
         if (@command)
             cfg[:command] = @command.source
         else
@@ -793,6 +795,8 @@ class TacacsDaemon #:nodoc:
             else
                 @logger = options[:logger]
             end
+        else
+            @logger = Logger.new(STDOUT)
         end
 
         if (options.has_key?(:log_level))
@@ -1296,6 +1300,8 @@ class TacacsUser #:nodoc:
             rescue
                 raise ArgumentError, "Invalid date for :enable_password_expires_on for user '#{@username}'."
             end
+        else
+            @enable_password_expires_on = Date.today + @enable_password_lifespan
         end
 
         if (options.has_key?(:login_password_expires_on))
@@ -1304,6 +1310,8 @@ class TacacsUser #:nodoc:
             rescue
                 raise ArgumentError, "Invalid date for :login_password_expires_on for user '#{@username}'."
             end
+        else
+            @login_password_expires_on = Date.today + @login_password_lifespan
         end
 
     end

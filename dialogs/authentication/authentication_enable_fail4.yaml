@@ -5,7 +5,7 @@
 
 :server_log: 
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Authentication attempt from disabled account.\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=earle"
+- "msg_type=Authentication\tmessage=Authentication failed. Account disabled.\tstatus=Fail\tclient=127.0.0.1\taction=Login\tauthen_type=0\tport=\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=earle"
 
 :client_dialog: 
 - !ruby/struct:TacacsPlus::PacketStruct 

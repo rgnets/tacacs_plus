@@ -239,7 +239,7 @@ private
 
         # check for active account, and valid pw
         if (!user) # fail if user unknown
-            fail_log_msg = 'Unknown user attempted authentication.'
+            fail_log_msg += " Unknown user."
 
         elsif (enable) # check enable password
             if (user.enable_password)
@@ -250,10 +250,11 @@ private
                       if (authen_start.body.action_login? && user.enable_password_expired?)
                           ret_val[:pass] = false
                           ret_val[:msg] = @tacacs_daemon.password_expired_prompt
+                          fail_log_msg += " Enable password expired."
                       end
                    else
                       ret_val[:msg] = @tacacs_daemon.disabled_prompt
-                      fail_log_msg = 'Authentication attempt from disabled account.'
+                      fail_log_msg += " Account disabled."
                    end
 
                 end
@@ -275,10 +276,11 @@ private
                       if (authen_start.body.action_login? && user.login_password_expired?)
                           ret_val[:pass] = false
                           ret_val[:msg] = @tacacs_daemon.password_expired_prompt
+                          fail_log_msg += " Login password expired."
                       end
                    else
                       ret_val[:msg] = @tacacs_daemon.disabled_prompt
-                      fail_log_msg = 'Authentication attempt from disabled account.'
+                      fail_log_msg += " Account disabled."
                    end
 
             end
@@ -297,14 +299,14 @@ private
                 match_results = acl.match(@peeraddr)
 
                 if ( match_results[:permit] )
-                    pass_log_msg = "Authentication permitted by ACL '#{acl.name}' #{match_results[:by]}."
+                    pass_log_msg = "Authentication successful. User permitted by ACL '#{acl.name}' #{match_results[:by]}."
                 else
                     ret_val[:pass] = false
                     ret_val[:msg] = "Authentication denied due to ACL restrictions on user."
-                    fail_log_msg = "Authentication denied by ACL '#{acl.name}' #{match_results[:by]}."
+                    fail_log_msg += " User denied by ACL '#{acl.name}' #{match_results[:by]}."
                 end
             else
-                pass_log_msg = "Authentication permitted."
+                pass_log_msg = "Authentication successful."
             end
         end
 

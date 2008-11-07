@@ -175,7 +175,21 @@
     :login_password: password
     :author_avpair: localhost
 
+  user5:
+    :encryption: clear
+    :enable_password: password
+    :login_password: password
+    :login_password_lifespan: 30
+    :enable_password_lifespan: 30
 
+  user6:
+    :encryption: clear
+    :enable_password: password
+    :login_password: password
+    :login_password_lifespan: 30
+    :login_password_expires_on: "2008-01-01"
+    :enable_password_lifespan: 30
+    :enable_password_expires_on: "2008-01-01"
 
 
 #### TACACS DAEMON ####
