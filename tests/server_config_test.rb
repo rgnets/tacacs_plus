@@ -326,6 +326,7 @@ class TestServer < Test::Unit::TestCase
         assert_raise(ArgumentError){TacacsPlus::Server.new(config)}
     end
 
+
     # users
     def test_arg_users_structure
         config = @config.dup

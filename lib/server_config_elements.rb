@@ -97,7 +97,7 @@ class AclEntry #:nodoc:
             raise ArgumentError, "Expected 'permit' or 'deny' for :permission, but was '#{options[:permission]}'." if(options[:permission] != 'permit' && options[:permission] != 'deny')
             @permission = options[:permission].to_sym
         else
-            raise ArgumentError, "Argument :permission is missiong."
+            raise ArgumentError, "Argument :permission is missing."
         end
 
         if (options.has_key?(:ip))
@@ -247,14 +247,15 @@ class AuthorAVPairEntry #:nodoc:
 # initialize
 #==============================================================================#
 
-    attr_reader :avpairs
-
     def initialize(tacacs_daemon,options)
         @acl = nil
-        @avpairs = []
+        @avpairs = nil
+        @dynamic_avpairs = []
+        @network_av = nil
         @service = nil
+        @shell_command_av = nil
 
-        known_args = [:acl, :avpairs, :service]
+        known_args = [:acl, :avpairs, :network_av, :service, :shell_command_av]
         raise ArgumentError, "Expected Hash, but #{options.class} provided."if (!options.kind_of?(Hash))
         TacacsPlus.validate_args(options.keys,known_args)
 
@@ -273,9 +274,22 @@ class AuthorAVPairEntry #:nodoc:
             raise ArgumentError, "No Service specified."
         end
 
+        if (options.has_key?(:network_av))
+            raise ArgumentError, "Expected Hash for :network_av, but #{options[:network_av].class} provided." if (!options[:network_av].kind_of?(Hash))
+            @network_av = NetworkAV.new(tacacs_daemon, options[:network_av])
+            @dynamic_avpairs.push(@network_av.avpair)
+        end
+
+        if (options.has_key?(:shell_command_av))
+            raise ArgumentError, "Expected Hash for :shell_command_av, but #{options[:shell_command_av].class} provided." if (!options[:shell_command_av].kind_of?(Hash))
+            @shell_command_av = ShellCommandAV.new(tacacs_daemon, options[:shell_command_av])
+            @dynamic_avpairs.push(@shell_command_av.avpair)
+        end
+
         if (options.has_key?(:avpairs))
             raise ArgumentError, "Expected Array for :avpairs, but #{options[:avpairs].class} provided." if (!options[:avpairs].kind_of?(Array))
 
+           @avpairs = []
            options[:avpairs].each do |avpair|
                 begin
                     TacacsPlus.validate_avpair(avpair)
@@ -285,10 +299,24 @@ class AuthorAVPairEntry #:nodoc:
 
                 @avpairs.push(avpair)
             end
+
         else
-            raise ArgumentError, "No AVPairs specified."
+            raise ArgumentError, "No AVPairs specified." if (!@network_av || !@shell_command_av)
         end
+
     end
+
+#==============================================================================#
+# avpairs
+#==============================================================================#
+
+    def avpairs
+        avp = []
+        avp.concat(@avpairs) if (@avpairs)
+        avp.concat(@dynamic_avpairs) if (@dynamic_avpairs)
+        return(avp)
+    end
+
 
 #==============================================================================#
 # configuration
@@ -296,8 +324,11 @@ class AuthorAVPairEntry #:nodoc:
 
 # config hash for this object
     def configuration
-        cfg = {:service => @service, :avpairs => @avpairs}
+        cfg = {:service => @service}
         cfg[:acl] = @acl.name if (@acl)
+        cfg[:avpairs] = @avpairs if (@avpairs)
+        cfg[:network_av] = @network_av.configuration if (@network_av)
+        cfg[:shell_command_av] = @shell_command_av.configuration if (@shell_command_av)
         return(cfg)
     end
 
@@ -558,13 +589,89 @@ end
 
 
 
+class NetworkAV #:nodoc:
+
+#==============================================================================#
+# initialize
+#==============================================================================#
+
+    def initialize(tacacs_daemon,options)
+        @attribute = nil
+        @delimiter = nil
+        @value = nil
+        @tacacs_daemon = tacacs_daemon
+
+        known_args = [:attribute, :delimiter, :value]
+        raise ArgumentError, "Expected Hash for :network_av, but #{options.class} provided."if (!options.kind_of?(Hash))
+        TacacsPlus.validate_args(options.keys,known_args)
+
+        if (options.has_key?(:attribute))
+            raise ArgumentError, "Expected String for :attribute of :network_av, but '#{options[:attribute].class}' received."  if (!options[:attribute].kind_of?(String))
+            raise ArgumentError, "Argument :attribute of :network_av (#{options[:attribute]}) should end with a '=' or '*'." if (options[:attribute] !~ /=$/ && options[:attribute] !~ /\*$/)
+            @attribute = options[:attribute]
+        else
+            raise ArgumentError, "Argument :attribute of :network_av is missing."
+        end
+
+        if (options.has_key?(:delimiter))
+            raise ArgumentError, "Expected String for :delimiter of :network_av, but '#{options[:delimiter].class}' received."  if (!options[:delimiter].kind_of?(String))
+            @delimiter = options[:delimiter]
+        else
+            raise ArgumentError, "Argument :delimiter of :network_av is missing."
+        end
+
+        if (options.has_key?(:value))
+            raise ArgumentError, "Expected Array for :value of :network_av, but '#{options[:value].class}' received."  if (!options[:value].kind_of?(Array))
+
+            options[:value].each do |x|
+                if (!@tacacs_daemon.network_object_groups(x))
+                    raise ArgumentError, "Unknown Network Object Group '#{x}' referenced by :network_av."
+                end
+            end
+            @value = options[:value]
+        else
+            raise ArgumentError, "Argument :value of :network_av is missing."
+        end
+    end
+
+#==============================================================================#
+# avpair
+#==============================================================================#
+
+    def avpair
+        avp = @attribute.dup
+        cidrs = []
+        @value.each do |x|
+            @tacacs_daemon.network_object_groups(x).entries.each do |e|
+                cidrs.push(e.to_s)
+            end
+        end
+        avp << cidrs.join(@delimiter)
+
+        return(avp)
+    end
+
+#==============================================================================#
+# configuration
+#==============================================================================#
+
+# config hash for this object
+    def configuration
+        cfg = {:attribute => @attribute, :delimiter => @delimiter, :value => @value}
+        return(cfg)
+    end
+
+end
+
+
+
 class NetworkObjectGroup #:nodoc:
 
 #==============================================================================#
 # initialize
 #==============================================================================#
 
-    attr_reader :name
+    attr_reader :name, :entries
 
     def initialize(name,entries)
         @name = name
@@ -619,6 +726,80 @@ class NetworkObjectGroup #:nodoc:
 end
 
 
+class ShellCommandAV #:nodoc:
+
+#==============================================================================#
+# initialize
+#==============================================================================#
+
+    def initialize(tacacs_daemon,options)
+        @attribute = nil
+        @delimiter = nil
+        @value = nil
+        @tacacs_daemon = tacacs_daemon
+
+        known_args = [:attribute, :delimiter, :value]
+        raise ArgumentError, "Expected Hash for :shell_command_av, but #{options.class} provided."if (!options.kind_of?(Hash))
+        TacacsPlus.validate_args(options.keys,known_args)
+
+        if (options.has_key?(:attribute))
+            raise ArgumentError, "Expected String for :attribute of :shell_command_av, but '#{options[:attribute].class}' received."  if (!options[:attribute].kind_of?(String))
+            raise ArgumentError, "Argument :attribute of :shell_command_av (#{options[:attribute]})should end with a '=' or '*'." if (options[:attribute] !~ /=$/ && options[:attribute] !~ /\*$/)
+            @attribute = options[:attribute]
+        else
+            raise ArgumentError, "Argument :attribute of :shell_command_av is missing."
+        end
+
+        if (options.has_key?(:delimiter))
+            raise ArgumentError, "Expected String for :delimiter of :shell_command_av, but '#{options[:delimiter].class}' received."  if (!options[:delimiter].kind_of?(String))
+            @delimiter = options[:delimiter]
+        else
+            raise ArgumentError, "Argument :delimiter of :shell_command_av is missing."
+        end
+
+        if (options.has_key?(:value))
+            raise ArgumentError, "Expected Array for :value of :shell_command_av, but '#{options[:value].class}' received."  if (!options[:value].kind_of?(Array))
+            options[:value].each do |x|
+                if (!@tacacs_daemon.shell_command_object_groups(x))
+                    raise ArgumentError, "Unknown Shell Command Object Group '#{x}' referenced by :shell_command_av."
+                end
+            end
+            @value = options[:value]
+        else
+            raise ArgumentError, "Argument :value of :shell_command_av is missing."
+        end
+    end
+
+#==============================================================================#
+# avpair
+#==============================================================================#
+
+    def avpair
+        avp = @attribute.dup
+        regexps = []
+        @value.each do |x|
+            @tacacs_daemon.shell_command_object_groups(x).entries.each do |e|
+                regexps.push(e.source)
+            end
+        end
+        avp << regexps.join(@delimiter)
+
+        return(avp)
+    end
+
+#==============================================================================#
+# configuration
+#==============================================================================#
+
+# config hash for this object
+    def configuration
+        cfg = {:attribute => @attribute, :delimiter => @delimiter, :value => @value}
+        return(cfg)
+    end
+
+end
+
+
 
 class ShellCommandObjectGroup #:nodoc:
 
@@ -626,7 +807,7 @@ class ShellCommandObjectGroup #:nodoc:
 # initialize
 #==============================================================================#
 
-    attr_reader :name
+    attr_reader :name, :entries
 
     def initialize(name,entries)
         @name = name

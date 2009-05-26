@@ -1,12 +1,16 @@
 require 'rubygems'
-Gem::manage_gems
+#Gem::manage_gems
 require 'rake/gempackagetask'
 
 spec = Gem::Specification.new do |s|
     s.platform  =   Gem::Platform::RUBY
     s.name      =   "tacacs_plus"
-    s.version   =   "1.0.0"
+    s.description = "A Ruby based TACACS+ library"
+    s.rubyforge_project = 'tacacs_plus'
+    s.homepage = ''
+    s.version   =   "1.1.0"
     s.author    =   "Dustin Spinhirne"
+    s.email = ''
     s.summary   =   "TacacsPlus is a module and collection of classes for " +
                     "working with the TACACS+ protocol created by Cisco Systems Inc."
     s.files     =   FileList['lib/*.rb', 'test/*.rb', 'dialogs/**/*', 'scripts/**/*'].to_a
@@ -15,7 +19,7 @@ spec = Gem::Specification.new do |s|
     s.has_rdoc  =   true
     s.extra_rdoc_files  =   ["README"].concat(Dir.glob('doc/*'))
     s.add_dependency("netaddr", ">= 1.4.0")
-end 
+end
 
 Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_tar = true

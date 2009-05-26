@@ -36,8 +36,14 @@ module TacacsPlus
 #* :author_avpairs - Contains a Hash of Arrays. The key of the Hash
 #  indicates the profile name, and the value is an Array of Hashes with keys:
 #  * :acl - the name of an ACL to be used for issuing shell settings on a per-device basis (optional)
-#  * :avpairs - an array of attribute-value pairs in the form 'attribute=value' or 'attribute*value' (required. see tac-rfc.1.78.txt for complete list of avpairs)
+#  * :avpairs - an array of attribute-value pairs in the form 'attribute=value' or 'attribute*value' (required if no
+#    shell_command_av or network_av. see tac-rfc.1.78.txt for complete list of avpairs)
 #  * :service - a String indicating one of the standard Service AVPairs (shell, raccess, ppp, etc...) (required)
+#  * :shell_command_av and :network_av - (optional) used to generate avpairs from shell command or network object groups. both of these shall
+#    consist of a hash with the following keys:
+#    * :attribute - specifies the attribute portion of an avpair along with the '=' or '*' characters (eg. junos-exec=, junos-exec*)
+#    * :delimiter - specifies the delimitation string for the values array
+#    * :value - an array of object group names (either shell command or network depending on if this is a shell_command_av or network_av)
 #
 #* :command_authorization_profiles - Contains a Hash of Arrays. The key of the Hash
 #  indicates the profile name, and the value is an Array of Hashes with the keys:
@@ -51,7 +57,7 @@ module TacacsPlus
 #  * :shell_command_object_group - indicates the name of a Shell Command Object Group (optional if :command provided)
 #
 #* :network_object_groups - Contains a Hash of Arrays. The key of the Hash
-#  indicates the object group name, and the value is an Array of network blocks in either 
+#  indicates the object group name, and the value is an Array of network blocks in either
 #  extended (x.x.x.x y.y.y.y) or cidr (x.x.x.x/y) format
 #
 #* :shell_command_object_groups - Contains a Hash of Arrays. The key of the Hash
@@ -80,7 +86,7 @@ module TacacsPlus
 #
 #* :user_groups - Contains a Hash of Hashes. The key indicates the group name, and the value
 #  is a Hash with the keys:
-#  * :command_authorization_profile - the name of a command authorization profile to use for this group. 
+#  * :command_authorization_profile - the name of a command authorization profile to use for this group.
 #  * :enable_acl - the name of an ACL specifying devices on which users may request enable.
 #  * :login_acl - the name of an ACL specifying devices on which users may login.
 #  * :author_avpair - the name of a shell profile for the group.
@@ -105,7 +111,7 @@ module TacacsPlus
 #A note on password expiry: The user options x_password_expires_on and x_password_lifespan are used to enforce password changes
 #by users. For example, if you want to force users to change their password every 30 days then you would set the x_password_lifespan
 #field to 30. If you do not want to force password changes ever, then you would leave the field blank (or set 0). The x_password_expires_on
-#field should never need to be specified as it is set automatically when the user changes their password. 
+#field should never need to be specified as it is set automatically when the user changes their password.
 #
 class Server
 
@@ -233,7 +239,7 @@ class Server
 # Start the TACACS Plus Server.
 #
     def start()
-        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server', 
+        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server',
                            "message=Starting TACACS+ server with pid #{Process.pid}."]) if (start_server)
         return(nil)
     end
@@ -440,28 +446,36 @@ private
             while(true)
                 begin
                     thread = Thread.new(@server.accept) do |client_socket|
+                    #----------------------------------------------------------------
+                    # client thread begins here
+
                         peeraddr = nil
+                        # try to get the ip of the client
                         begin
                             peeraddr = NetAddr::CIDR.create( client_socket.peeraddr[3] )
                         rescue Exception => error
                             @tacacs_daemon.log(:debug,['msg_type=TacacsPlus::Server', "message=Could not obtain client IP. Terminating connection."])
-                            client_socket.close if (!client_socket.closed?)
                         end
 
+                        # if we were able to get the client ip, then try to process the request
                         if (peeraddr)
                             if (@clients.list.length >= @tacacs_daemon.max_clients)
                                 @tacacs_daemon.log(:warn,['msg_type=TacacsPlus::Server', 'message=Maximum connection limit reached. Rejecting new connection.'],nil,peeraddr)
-                                client_socket.close
                             else
                                 client_connection = ClientConnection.new(@tacacs_daemon, client_socket, peeraddr)
                                 begin
                                     client_connection.process!
                                 rescue Exception => err
                                     STDERR.puts("\n\n#### #{Time.now.strftime("%Y-%m-%d %H:%M:%S %Z")} - CAUGHT EXCEPTION WHILE PROCESSING CLIENT REQUEST ####\n #{err}.\n\n#{err.backtrace.join("\n")}")
-                                    client_socket.close if (!client_socket.closed?)
                                 end
                             end
                         end
+
+                        # close client connection before leaving thread
+                        client_socket.close if (!client_socket.closed?)
+
+                    # client thread ends here
+                    #----------------------------------------------------------------
                     end
                     @clients.add(thread)
 

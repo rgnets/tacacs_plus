@@ -1,5 +1,9 @@
 ==Version x.x.x
-* check into sock timeout. make this separate for each packet recvd
+* fixed memory leak
+* shell_command_av & network_av
+* single connections support
+* make sock timeout better
+* make 0 disable max connections
 
 
 ==Version 1.0.0

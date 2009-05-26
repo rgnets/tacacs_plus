@@ -188,7 +188,7 @@ attr_reader :key, :logger, :dump_file, :port, :server, :session_id, :sock_timeou
 
     def testing=(testing)
         if (!testing.kind_of?(TrueClass) && !testing.kind_of?(FalseClass))
-            raise ArgumentError, "Expected True or False for :testing, but was #{testing.class}" 
+            raise ArgumentError, "Expected True or False for :testing, but was #{testing.class}"
         end
         @testing = testing
     end
@@ -291,6 +291,7 @@ attr_reader :key, :logger, :dump_file, :port, :server, :session_id, :sock_timeou
 # :args => [Array] -- list of avpairs returned by the server
 # :data => [String] -- message to be presented to administrator
 # :pass  => [true|false] -- true if request successful
+# :pass_type => [:add|:repl] -- indicates whether server returned a pass_add or pass_repl message
 # :server_msg  => [String] -- message to be presented to user
 #
     def authorization_avpairs(username, service='shell')
@@ -356,6 +357,7 @@ attr_reader :key, :logger, :dump_file, :port, :server, :session_id, :sock_timeou
 # :args => [Array] -- list of avpairs returned by the server
 # :data => [String] -- message to be presented to administrator
 # :pass  => [true|false] -- true if request successful
+# :pass_type => [:add|:repl] -- indicates whether server returned a pass_add or pass_repl message
 # :server_msg  => [String] -- message to be presented to user
 #
     def authorize_command(username,command)
@@ -1014,11 +1016,13 @@ private
         args = session.args
 
         if (session.reply.body.status_passadd?)
-            args.concat(session.reply.body.args) if (session.reply.body.arg_cnt != 0)
+            args = session.reply.body.args
             session.pass_fail[:pass] = true
+            session.pass_fail[:pass_type] = :add
         elsif (session.reply.body.status_passrepl?)
             args = session.reply.body.args
             session.pass_fail[:pass] = true
+            session.pass_fail[:pass_type] = :repl
         end
 
         session.pass_fail[:server_msg] = session.reply.body.server_msg
@@ -1037,7 +1041,7 @@ private
 #
     def process_response(session,in_sock,out_sock=nil)
         session.expected_seq_no = 2
-        session.pass_fail = {:data => '', :pass => false, :server_msg => ''}
+        session.pass_fail = {:data => '', :pass => false, :pass_type => nil, :server_msg => ''}
 
         # send first packet to server
         if (!out_sock)
@@ -1149,7 +1153,7 @@ private
 #==============================================================================#
 
 # used for aaa messages
-    ClientSession = Struct.new(:request, :reply, :expected_seq_no, :pass_fail, :terminate, :type,
+    ClientSession = Struct.new(:request, :reply, :expected_seq_no, :pass_fail, :pass_type, :terminate, :type,
                                :getuser, :getpass, :getdata, :args) #:nodoc:
 
 

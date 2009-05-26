@@ -1,15 +1,21 @@
---- 
-:shell_command_object_groups: 
-  show commands: 
+---
+:shell_command_object_groups:
+  show commands:
   - show version
   - show running-configuration
   - show
-  whitelist: 
+  whitelist:
   - login
   - exit
+  juniper1:
+  - ^configure$
+  - ^show version$
+  juniper2:
+  - ^show configuration$
+  - ^show interfaces$
 
-:network_object_groups: 
-  datacenter1: 
+:network_object_groups:
+  datacenter1:
   - 10.1.0.0/16
   - 10.3.0.0/16
   - 10.6.0.0/16
@@ -18,29 +24,29 @@
   - 10.9.0.128/25
   - 10.9.1.128/25
 
-:acls: 
-  deny local: 
+:acls:
+  deny local:
   - :permission: deny
     :ip: 127.0.0.0
     :wildcard_mask: 0.255.255.255
   - :permission: permit
     :ip: any
-  deny all: 
+  deny all:
   - :permission: deny
     :ip: any
-  permit dc: 
+  permit dc:
   - :permission: permit
     :network_object_group: datacenter1
   - :permission: deny
     :ip: 127.0.0.0
     :wildcard_mask: 0.255.255.255
-  permit local: 
+  permit local:
   - :permission: permit
     :ip: 127.0.0.0
     :wildcard_mask: 0.255.255.255
   - :permission: deny
     :ip: any
-  permit all: 
+  permit all:
   - :permission: permit
     :ip: any
   permit dc2:
@@ -57,24 +63,24 @@
     :ip: 10.10.10.11
     :wildcard_mask: 0.0.0.0
 
-:command_authorization_profiles: 
-  profile1: 
+:command_authorization_profiles:
+  profile1:
   - :acl: permit all
     :shell_command_object_group: show commands
   - :acl: permit dc
     :command: configure terminal
   - :acl: permit local
     :command: write erase
-  profile2: 
+  profile2:
   - :acl: permit all
     :shell_command_object_group: show commands
-  profile3: 
+  profile3:
   - :acl: deny all
     :shell_command_object_group: show commands
-  profile4: 
+  profile4:
   - :shell_command_object_group: show commands
 
-:command_authorization_whitelist: 
+:command_authorization_whitelist:
   - :acl: permit local
     :command: enable
   - :acl: permit all
@@ -123,9 +129,22 @@
   - :service: shell
     :avpairs:
     - autocmd=show version
+  author_avpair5:
+  - :service: junos-exec
+    :network_av:
+      :attribute: networks*
+      :delimiter: ","
+      :value:
+      - datacenter1
+    :shell_command_av:
+      :attribute: deny-commands=
+      :delimiter: "|"
+      :value:
+      - juniper1
+      - juniper2
 
-:users: 
-  dustin: 
+:users:
+  dustin:
     :login_password: password
     :encryption: clear
     :command_authorization_profile: profile1
@@ -133,14 +152,14 @@
     :author_avpair: author_avpair1
     :login_acl: permit all
     :enable_acl: permit all
-  tom: 
+  tom:
     :login_password: password
     :encryption: clear
     :enable_password: enable
     :login_acl: deny local
     :author_avpair: author_avpair1
     :enable_acl: permit all
-  brad: 
+  brad:
     :enable_acl: deny local
     :login_password: password
     :encryption: clear
@@ -148,7 +167,7 @@
     :enable_password: enable
     :author_avpair: author_avpair2
     :login_acl: permit all
-  david: 
+  david:
     :enable_acl: permit local
     :login_password: password
     :encryption: clear
@@ -156,7 +175,7 @@
     :enable_password: enable
     :author_avpair: author_avpair3
     :login_acl: permit local
-  marty: 
+  marty:
     :login_password: password
     :login_password_expires_on: '2008-01-01'
     :encryption: clear
@@ -166,44 +185,48 @@
     :enable_acl: permit all
     :login_password_lifespan: 90
     :enable_password_lifespan: 90
-  earle: 
+  earle:
     :login_password: password
     :encryption: clear
     :enable_password: enable
     :disabled: true
     :login_acl: permit all
     :enable_acl: permit all
-  adam: 
+  adam:
     :login_password: password
     :encryption: clear
     :user_group: group1
     :enable_password: enable
-  ethan: 
+  ethan:
     :login_password: password
     :encryption: clear
     :user_group: group2
     :enable_password: enable
-  chip: 
+  chip:
     :login_password: password
     :encryption: clear
     :command_authorization_profile: profile4
     :enable_password: enable
     :author_avpair: author_avpair4
-  jon: 
+  jon:
     :login_password: password
     :encryption: clear
+  joe:
+    :login_password: password
+    :encryption: clear
+    :author_avpair: author_avpair5
 
-:user_groups: 
-  group1: 
+:user_groups:
+  group1:
     :enable_acl: deny local
     :login_acl: permit all
-  group2: 
+  group2:
     :command_authorization_profile: profile1
     :author_avpair: author_avpair1
     :login_acl: permit all
     :enable_acl: permit all
 
-:tacacs_daemon: 
+:tacacs_daemon:
   :default_policy: deny
   :delimiter: "\t"
   :disabled_prompt: Account has been disabled.
