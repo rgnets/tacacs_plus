@@ -301,7 +301,7 @@ class AuthorAVPairEntry #:nodoc:
             end
 
         else
-            raise ArgumentError, "No AVPairs specified." if (!@network_av || !@shell_command_av)
+            raise ArgumentError, "No AVPairs specified." if (!@network_av && !@shell_command_av)
         end
 
     end

@@ -46,6 +46,7 @@ private
                 end
             else # assume offline testing with TestIO
                 pkt = socket.read()
+                raise(EOFError) if (pkt.nil?)
                 header = TacacsPlus::TacacsHeader.new( pkt.slice!(0..11) )
                 body =  pkt
                 decoded = TacacsPlus.decode_packet(header,body,key)

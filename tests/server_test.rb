@@ -50,7 +50,7 @@ class TestServer < Test::Unit::TestCase
                 tac_server.test(socket,ip)
                 actual_server_responses = socket.write_data
 
-                # perform packet by packet inspection if actual server output has same 
+                # perform packet by packet inspection if actual server output has same
                 # number of packets as expected server output
                 if (server_responses.length == actual_server_responses.length)
                     packet_num = 1
@@ -76,7 +76,7 @@ class TestServer < Test::Unit::TestCase
 
                 else
                     puts "\nACTUAL RESPONSE\n"
-                    actual_server_responses.each {|actual| 
+                    actual_server_responses.each {|actual|
                         header = TacacsPlus::TacacsHeader.new( actual.slice!(0..11) )
                         actual_dec = TacacsPlus.decode_packet(header,actual,@key)
                         puts actual_dec.to_yaml + "\n"
@@ -88,6 +88,7 @@ class TestServer < Test::Unit::TestCase
                 end
 
                 # test logger output
+                logger.messages.pop if (logger.messages.last =~ /Peer sent EOF/)
                 if (@dialogs[dir][filename][:server_log] != logger.messages)
                     flunk("\nLogging ouput did not match what was expected for dialog '#{filename}.\n" +
                           "Expected:\n#{@dialogs[dir][filename][:server_log].to_yaml}\n\nReceived:\n#{logger.messages.to_yaml}\n\n")
