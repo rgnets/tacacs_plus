@@ -61,7 +61,7 @@ private
                 else
                     # fail
                     new_body.status_fail!
-                    new_body.server_msg = "Password requested but none provided." 
+                    new_body.server_msg = "Password requested but none provided."
                 end
 
             else
@@ -113,7 +113,7 @@ private
                     session.getuser = authen_cont.body.user_msg
                     new_body.status_getdata!
                     new_body.flag_noecho!
-                    new_body.server_msg = @tacacs_daemon.password_prompt 
+                    new_body.server_msg = @tacacs_daemon.password_prompt
 
                 else
                     # fail
@@ -141,7 +141,7 @@ private
                 else
                     # fail
                     new_body.status_fail!
-                    new_ body.server_msg = "Password requested but none provided." 
+                    new_ body.server_msg = "Password requested but none provided."
                 end
 
             elsif (session.reply.body.status_getpass?)
@@ -177,7 +177,7 @@ private
                 else
                     # fail
                     new_body.status_fail!
-                    new_ body.msg = "Password requested but none provided." 
+                    new_ body.msg = "Password requested but none provided."
                 end
 
             else
@@ -500,7 +500,6 @@ private
         end
 
         session.reply.header = new_header
-        session.reply.header.inc_seq_no!
         session.reply.body = new_body
 
         return(nil)

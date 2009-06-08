@@ -41,6 +41,7 @@ class ClientConnection #:nodoc:
                     @tacacs_daemon.log(:debug,['msg_type=TacacsPlus::Server', 'message=No response from client. Terminating connection.'],recvd_pkt,@peeraddr)
                     break
                 end
+
             rescue Exception => error
                 @tacacs_daemon.log(:debug,['msg_type=TacacsPlus::Server', "message=#{error} Terminating connection."],recvd_pkt,@peeraddr)
                 break
@@ -135,6 +136,7 @@ class ClientConnection #:nodoc:
             # if session still defined, then send reply to client. else delete session.
             if (session.reply)
                 # send the reply and delete the session if terminate flag set
+                session.reply.header.inc_seq_no!
                 send_packet(@socket,session.reply.dup,@tacacs_daemon.key)
                 sessions.delete(session_id) if (session.terminate)
 
@@ -142,8 +144,6 @@ class ClientConnection #:nodoc:
                 sessions.delete(session_id)
             end
 
-            # if no more sessions, then break
-            break if (sessions.length == 0)
          end
 
         @socket.close if (!@socket.closed?)

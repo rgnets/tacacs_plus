@@ -459,7 +459,7 @@ private
 
                         # if we were able to get the client ip, then try to process the request
                         if (peeraddr)
-                            if (@clients.list.length >= @tacacs_daemon.max_clients)
+                            if (@tacacs_daemon.max_clients > 0 && @clients.list.length >= @tacacs_daemon.max_clients)
                                 @tacacs_daemon.log(:warn,['msg_type=TacacsPlus::Server', 'message=Maximum connection limit reached. Rejecting new connection.'],nil,peeraddr)
                             else
                                 client_connection = ClientConnection.new(@tacacs_daemon, client_socket, peeraddr)

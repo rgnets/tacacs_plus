@@ -1,9 +1,7 @@
-==Version x.x.x
-* fixed memory leak
-* shell_command_av & network_av
-* single connections support
-* make sock timeout better
-* make 0 disable max connections
+==Version 1.1.0
+* added shell_command_av & network_av to authorization_avpairs for a Server
+* reworked tcp single connection support in Server
+* made it so that a value of 0 disables max connections for a Server
 
 
 ==Version 1.0.0

@@ -232,7 +232,6 @@ private
 
         # finish up
         session.reply.header = author_request.header.dup
-        session.reply.header.inc_seq_no!
         session.reply.body = new_body
         session.terminate = true
         return(nil)
