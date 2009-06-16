@@ -165,6 +165,7 @@ class Server
 #
     def initialize(options)
         process_options(options)
+        @client_connection_count = 0
     end
 
 #==============================================================================#
@@ -186,6 +187,19 @@ class Server
         @tacacs_daemon.user_groups.each {|x| cfg[:user_groups][x.name] = x.configuration }
         @tacacs_daemon.users.each {|x| cfg[:users][x.username] = x.configuration }
         return(cfg)
+    end
+
+#==============================================================================#
+# log_client_connections!()
+#==============================================================================#
+
+# logs then number of client connections since since last request
+#
+    def log_client_connections!()
+        @tacacs_daemon.log(:warn,['msg_type=TacacsPlus::Server',
+                           "message=connections:#{@client_connection_count}"])
+        @client_connection_count = 0
+        return(true)
     end
 
 #==============================================================================#
@@ -478,6 +492,7 @@ private
                     #----------------------------------------------------------------
                     end
                     @clients.add(thread)
+                    @client_connection_count += 1
 
                 rescue LoggerInit
                     init_logger!
