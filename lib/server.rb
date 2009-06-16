@@ -196,7 +196,7 @@ class Server
 # logs then number of client connections since since last request
 #
     def log_client_connections!()
-        @tacacs_daemon.log(:warn,['msg_type=TacacsPlus::Server',
+        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server',
                            "message=connections:#{@client_connection_count}"])
         @client_connection_count = 0
         return(true)
