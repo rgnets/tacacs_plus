@@ -190,16 +190,15 @@ class Server
     end
 
 #==============================================================================#
-# log_client_connections!()
+# client_connection_count!()
 #==============================================================================#
 
-# logs then number of client connections since since last request
+# returns the number of client connections since since last request. resets the counter to 0.
 #
-    def log_client_connections!()
-        @tacacs_daemon.log(:info,['msg_type=TacacsPlus::Server',
-                           "message=connections:#{@client_connection_count}"])
+    def client_connection_count!()
+        count = @client_connection_count
         @client_connection_count = 0
-        return(true)
+        return(count)
     end
 
 #==============================================================================#
