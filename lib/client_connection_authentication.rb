@@ -216,7 +216,7 @@ private
             new_body.server_msg = "MS-CHAP is currently unsupported."
         else
             new_body.status_fail!
-            new_body.server_msg = "Client requested unknown or unsupported authen_type: #{authen_start.body.authen_type}"
+            new_body.server_msg = "Client requested unknown or unsupported authen_type: #{authen_start.body.authen_type} (is client using correct encryption key?)"
             @tacacs_daemon.log(:error,['msg_type=Authentication', "message=#{new_body.server_msg}","status=#{new_body.xlate_status}"],authen_start,@peeraddr)
         end
 
@@ -487,7 +487,7 @@ private
                 @tacacs_daemon.log(:error,['msg_type=Authentication', "message=#{new_body.server_msg}", "status=#{new_body.xlate_status}"],authen_start,@peeraddr)
             else
                 new_body.status_error!
-                new_body.server_msg = "Client requested unknown or unsupported action: #{authen_start.body.xlate_action}."
+                new_body.server_msg = "Client requested unknown or unsupported action: #{authen_start.body.xlate_action} (is client using correct encryption key?)."
                 @tacacs_daemon.log(:error,['msg_type=Authentication', "message=#{new_body.server_msg}", "status=#{new_body.xlate_status}"],authen_start,@peeraddr)
             end
         end

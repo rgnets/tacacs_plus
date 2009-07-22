@@ -1,15 +1,15 @@
---- 
+---
 :description: action field of authen_start packet is set to 0.
 
 :client_log: []
 
-:server_log: 
+:server_log:
 - "msg_type=TacacsPlus::Server\tmessage=Starting TACACS+ server (Offline Testing Mode)."
-- "msg_type=Authentication\tmessage=Client requested unknown or unsupported action: 0.\tstatus=Error\tclient=127.0.0.1\taction=0\tauthen_type=0\tport=TacacsPlus::Client\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=dustin"
+- "msg_type=Authentication\tmessage=Client requested unknown or unsupported action: 0 (is client using correct encryption key?).\tstatus=Error\tclient=127.0.0.1\taction=0\tauthen_type=0\tport=TacacsPlus::Client\tpriv_lvl=15\trem_addr=\tservice=Enable\tuser=dustin"
 
-:client_dialog: 
-- !ruby/struct:TacacsPlus::PacketStruct 
-  header: !ruby/object:TacacsPlus::TacacsHeader 
+:client_dialog:
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
     flags: 0
     length: 32
     major_version: 12
@@ -17,34 +17,34 @@
     seq_no: 1
     session_id: 1882512180
     type: 1
-  body: !ruby/object:TacacsPlus::AuthenticationStart 
+  body: !ruby/object:TacacsPlus::AuthenticationStart
     action: 0
     authen_type: 0
-    data: 
+    data:
     data_len: 0
     port: TacacsPlus::Client
     port_len: 18
     priv_lvl: 15
-    rem_addr: 
+    rem_addr:
     rem_addr_len: 0
     service: 2
     user: dustin
     user_len: 6
 
-:server_dialog: 
-- !ruby/struct:TacacsPlus::PacketStruct 
-  header: !ruby/object:TacacsPlus::TacacsHeader 
+:server_dialog:
+- !ruby/struct:TacacsPlus::PacketStruct
+  header: !ruby/object:TacacsPlus::TacacsHeader
     flags: 0
-    length: 56
+    length: 98
     major_version: 12
     minor_version: 0
     seq_no: 2
     session_id: 1882512180
     type: 1
-  body: !ruby/object:TacacsPlus::AuthenticationReply 
+  body: !ruby/object:TacacsPlus::AuthenticationReply
     data_len: 0
     flags: 0
-    server_msg: "Client requested unknown or unsupported action: 0."
-    server_msg_len: 50
+    server_msg: "Client requested unknown or unsupported action: 0 (is client using correct encryption key?)."
+    server_msg_len: 92
     status: 7
 
