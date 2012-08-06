@@ -1,9 +1,7 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
-require 'lib/tacacs_plus.rb'
+require_relative '../lib/tacacs_plus.rb'
 require 'test/unit'
-
-
 
 class TestClient < Test::Unit::TestCase
 
