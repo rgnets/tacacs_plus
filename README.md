@@ -1,4 +1,4 @@
-=Introduction
+##Introduction
 TacacsPlus was created in order to facilitate the easy creation of
 clients and servers, and thus, the most useful classes are TacacsPlus::Client
 and TacacsPlus::Server. Please see the rdoc files for more information on these classes.
@@ -12,13 +12,14 @@ with the raw TACACS+ packets, then please see the documentation within the sourc
 
 Dustin Spinhirne
 
-=General Description
+##General Description
 AAA consists of 3 parts; authentication, authorization, and accounting.
 Within each of these functions there are various packet types which
 facilitate communication between a client and server. Classes
 have been defined to allow the creation of complete TACACS+ packets. Every
 packet will contain a header, which is represented by the class TacacsPlus::TacacsHeader.
 The body of each packet will be defined by one of the following classes:
+
  * TacacsPlus::AuthenticationStart
  * TacacsPlus::AuthenticationReply
  * TacacsPlus::AuthenticationContinue
@@ -32,3 +33,8 @@ with each other, I created a module for each packet field which is then mixed in
 the appropriate packets. Pay attention to the included modules for
 each packet class if you want to know which methods are available for use.
 
+##Original Project
+Original code was made by Dustin Spinhirne, please visit his [Ruby Forge Project](http://rubyforge.org/projects/tacacs-plus/) for more information.
+
+##License 
+[Ruby License](http://www.ruby-lang.org/en/about/license.txt) according to [Ruby Forge](http://rubyforge.org/projects/tacacs-plus/).
